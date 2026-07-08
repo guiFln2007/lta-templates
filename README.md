@@ -18,10 +18,9 @@ Templates de paginas de venda testadas e validadas em operacoes reais de low tic
 | `light-craft` | Light com tons quentes | Artesanato, croche, feminino |
 | `mystical` | Dark roxo com particulas | Taro, esoterico, mistico |
 | `green-forest` | Dark verde floresta | Escoteiros, natureza, educacao |
-| `light-professional` | Light profissional | Concursos, OAB, educacao formal |
 | `quiz-verde` | Quiz dark verde | Saude, receitas, emagrecimento |
 | `warm-pascoa` | Light laranja quente | Datas comemorativas, kits, DIY |
-| `reference/` | Modelos de referencia | Template master + catequese |
+| `reference/` | Modelo de referencia | Template master de pagina de vendas |
 
 ## Estrutura padrao de uma pagina validada
 
