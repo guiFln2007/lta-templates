@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receitas com Chia para Emagrecer</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f1b0f;color:#fff;min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;padding:20px;max-width:480px;margin:0 auto}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* TELA 1 - INTRO */
+.intro{justify-content:flex-start!important;padding-top:0!important;padding:0!important}
+.intro-hero{width:100%;background:linear-gradient(180deg,#0a1a0a 0%,#122212 100%);padding:32px 20px 28px;text-align:center;border-bottom:2px solid #22c55e}
+.intro-stat{display:inline-block;background:#1a0a0a;border:1px solid #ef4444;border-radius:8px;padding:6px 14px;margin-bottom:16px;font-size:13px;color:#ef4444;font-weight:600;letter-spacing:.5px}
+.intro h1{font-size:24px;text-align:center;line-height:1.35;margin-bottom:8px;color:#fff}
+.intro h1 strong{color:#22c55e}
+.intro .hook-number{font-size:42px;font-weight:900;color:#22c55e;display:block;margin-bottom:4px;line-height:1}
+.intro .hook-sub{font-size:15px;color:#a8c8a8;margin-bottom:20px}
+.intro-bullets{list-style:none;text-align:left;max-width:320px;margin:0 auto 24px}
+.intro-bullets li{padding:8px 0;font-size:14px;color:#c8e8c8;display:flex;align-items:center;gap:8px}
+.intro-bullets li::before{content:'⚡';font-size:16px}
+.intro-social{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
+.intro-social .avatar{width:28px;height:28px;border-radius:50%;background:#2d4a2d;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid #22c55e;margin-left:-8px}
+.intro-social .avatar:first-child{margin-left:0}
+.intro-social span{font-size:13px;color:#6b9e6b;align-self:center;margin-left:4px}
+.intro-body{padding:24px 20px 40px;text-align:center}
+.intro-body p{color:#a8c8a8;font-size:15px;margin-bottom:20px;line-height:1.5}
+.intro-trust{display:flex;justify-content:center;gap:16px;margin-bottom:24px}
+.intro-trust div{text-align:center}
+.intro-trust .t-num{font-size:22px;font-weight:800;color:#22c55e;display:block}
+.intro-trust .t-label{font-size:11px;color:#6b9e6b}
+.btn-start{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;padding:18px 48px;border-radius:50px;font-size:18px;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(34,197,94,.4);width:100%;max-width:360px;animation:pulse 2s infinite}
+.btn-start:hover{transform:scale(1.05);box-shadow:0 6px 30px rgba(34,197,94,.6)}
+@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(34,197,94,.4)}50%{box-shadow:0 4px 30px rgba(34,197,94,.7)}}
+.intro-safe{font-size:12px;color:#4a7a4a;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:4px}
+
+/* QUIZ */
+.quiz{padding-top:60px}
+.progress-bar{width:100%;height:6px;background:#1a2e1a;border-radius:3px;margin-bottom:8px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:3px;transition:width .4s ease}
+.step-label{font-size:13px;color:#6b9e6b;margin-bottom:32px;text-align:center}
+.quiz h2{font-size:20px;text-align:center;margin-bottom:28px;line-height:1.4;color:#e8f5e8}
+.options{width:100%;display:flex;flex-direction:column;gap:12px}
+.option-btn{background:#1a2e1a;border:2px solid #2d4a2d;color:#c8e8c8;padding:16px 20px;border-radius:14px;font-size:16px;cursor:pointer;transition:all .2s;text-align:left}
+.option-btn:hover{border-color:#22c55e;background:#1e3a1e;color:#fff}
+.option-btn:active{transform:scale(.97)}
+
+/* LOADING */
+.loading{text-align:center}
+.loading h2{font-size:20px;margin-bottom:24px;color:#e8f5e8}
+.loader-bar{width:100%;max-width:300px;height:8px;background:#1a2e1a;border-radius:4px;overflow:hidden;margin:0 auto 16px}
+.loader-fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:4px;transition:width .1s linear}
+.loader-pct{font-size:14px;color:#6b9e6b}
+.loader-steps{margin-top:20px;text-align:left;max-width:300px;margin-left:auto;margin-right:auto}
+.loader-step{font-size:14px;color:#4a7a4a;padding:6px 0;transition:color .3s}
+.loader-step.done{color:#22c55e}
+.loader-step.done::before{content:'✓ ';color:#22c55e}
+
+/* RESULTADO */
+.result{padding:40px 20px 60px;text-align:center}
+.result .timer-bar{background:#1a0a0a;border:1px solid #4a2020;border-radius:12px;padding:12px 20px;margin-bottom:24px;display:inline-flex;align-items:center;gap:8px}
+.timer-bar .clock{font-size:20px}
+.timer-bar span{color:#ef4444;font-weight:600;font-size:15px}
+.timer-bar #countdown{color:#ff6b6b;font-weight:700;font-size:17px}
+.result .badge{background:linear-gradient(135deg,#22c55e,#16a34a);display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;font-size:14px;font-weight:600;margin-bottom:16px}
+.result h1{font-size:22px;line-height:1.4;margin-bottom:8px;color:#e8f5e8}
+.result .sub{color:#a8c8a8;font-size:14px;margin-bottom:28px}
+
+.before-after{display:flex;gap:12px;margin-bottom:32px;width:100%}
+.ba-card{flex:1;border-radius:16px;overflow:hidden;position:relative}
+.ba-card img{width:100%;height:200px;object-fit:cover;display:block}
+.ba-label{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600}
+.ba-label.before{color:#ef4444}
+.ba-label.after{color:#22c55e}
+
+.protocol-card{background:#1a2e1a;border-radius:20px;padding:24px;margin-bottom:28px;width:100%;text-align:left}
+.protocol-card h3{font-size:18px;text-align:center;margin-bottom:20px;color:#e8f5e8}
+.week{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #2d4a2d}
+.week:last-child{border-bottom:none}
+.week-icon{font-size:24px;width:40px;text-align:center}
+.week-info h4{font-size:15px;color:#c8e8c8;margin-bottom:2px}
+.week-info p{font-size:13px;color:#6b9e6b}
+
+.offer-card{background:linear-gradient(180deg,#1a2e1a,#0f1b0f);border:2px solid #22c55e;border-radius:20px;padding:28px 24px;margin-bottom:24px;width:100%}
+.offer-card h3{font-size:18px;margin-bottom:4px;color:#e8f5e8}
+.offer-card .access{font-size:13px;color:#6b9e6b;margin-bottom:16px}
+.checklist{text-align:left;margin-bottom:20px}
+.checklist li{list-style:none;padding:6px 0;font-size:14px;color:#c8e8c8}
+.checklist li::before{content:'✓';color:#22c55e;font-weight:700;margin-right:8px}
+.bonus{text-align:left;margin-bottom:20px}
+.bonus li{list-style:none;padding:5px 0;font-size:14px;color:#fbbf24}
+.bonus li::before{content:'🎁 '}
+.price-old{font-size:14px;color:#6b9e6b;text-decoration:line-through;margin-bottom:4px}
+.price-label{font-size:13px;color:#a8c8a8;margin-bottom:4px}
+.price-new{font-size:36px;font-weight:800;color:#22c55e;margin-bottom:4px}
+.price-installment{font-size:13px;color:#6b9e6b;margin-bottom:20px}
+
+.btn-cta{display:block;width:100%;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;padding:18px;border-radius:50px;font-size:18px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(34,197,94,.4);margin-bottom:16px}
+.btn-cta:hover{transform:scale(1.03);box-shadow:0 6px 30px rgba(34,197,94,.6)}
+
+.guarantee{background:#1a2e1a;border-radius:16px;padding:20px;margin-bottom:32px;width:100%;text-align:center}
+.guarantee h4{font-size:16px;color:#e8f5e8;margin-bottom:8px}
+.guarantee p{font-size:13px;color:#a8c8a8;line-height:1.5}
+
+.faq{width:100%;text-align:left;margin-bottom:40px}
+.faq h3{text-align:center;font-size:18px;margin-bottom:16px;color:#e8f5e8}
+.faq-item{border-bottom:1px solid #2d4a2d;padding:14px 0}
+.faq-q{font-size:15px;color:#c8e8c8;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-q::after{content:'+';font-size:20px;color:#22c55e;transition:transform .2s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:14px;color:#6b9e6b;line-height:1.5}
+.faq-item.open .faq-a{max-height:200px;padding-top:10px}
+</style>
+</head>
+<body>
+
+<!-- TELA 1: INTRO -->
+<div class="screen intro active" id="intro">
+  <div class="intro-hero">
+    <div class="intro-stat">VAGAS LIMITADAS</div>
+    <h1>
+      <span class="hook-number">12 kg</span>
+      em 21 dias com <strong>receitas de chia</strong> que levam 2 minutos
+    </h1>
+    <p class="hook-sub">O protocolo que 4.837 mulheres já usam pra secar sem academia e sem passar fome</p>
+    <ul class="intro-bullets">
+      <li>Sem dietas restritivas ou passar fome</li>
+      <li>Receitas prontas em menos de 2 minutos</li>
+      <li>Resultados visíveis na primeira semana</li>
+      <li>Funciona mesmo sem fazer exercício</li>
+    </ul>
+    <div class="intro-social">
+      <div class="avatar">M</div><div class="avatar">A</div><div class="avatar">C</div><div class="avatar">R</div><div class="avatar">L</div>
+      <span>+4.837 mulheres</span>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">QUERO MEU PROTOCOLO ❯</button>
+    <div class="intro-safe">🔒 Seus dados estão 100% protegidos</div>
+  </div>
+  <div class="intro-body">
+    <div class="intro-trust">
+      <div><span class="t-num">97%</span><span class="t-label">aprovação</span></div>
+      <div><span class="t-num">21</span><span class="t-label">dias</span></div>
+      <div><span class="t-num">+50</span><span class="t-label">receitas</span></div>
+    </div>
+    <p>Responda 12 perguntas rápidas e descubra seu plano personalizado de emagrecimento com chia.</p>
+    <button class="btn-start" onclick="startQuiz()">COMEÇAR AGORA ❯</button>
+  </div>
+</div>
+
+<!-- TELA 2: QUIZ -->
+<div class="screen quiz" id="quiz">
+  <div style="width:100%">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="step-label" id="stepLabel">Pergunta 1 de 12</div>
+    <h2 id="question"></h2>
+    <div class="options" id="options"></div>
+  </div>
+</div>
+
+<!-- TELA 3: LOADING -->
+<div class="screen loading" id="loading">
+  <h2>Gerando seu protocolo personalizado...</h2>
+  <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+  <div class="loader-steps">
+    <div class="loader-step" id="ls1">Analisando suas respostas</div>
+    <div class="loader-step" id="ls2">Calculando seu perfil metabólico</div>
+    <div class="loader-step" id="ls3">Selecionando receitas ideais</div>
+    <div class="loader-step" id="ls4">Montando seu protocolo de 21 dias</div>
+  </div>
+</div>
+
+<!-- TELA 4: RESULTADO -->
+<div class="screen result" id="result">
+  <div class="timer-bar">
+    <span class="clock">⏰</span>
+    <span>Seu protocolo expira em:</span>
+    <span id="countdown">10:00</span>
+  </div>
+
+  <div class="badge">✓ Protocolo gerado com sucesso!</div>
+  <h1>Seu Plano de Receitas de 21 dias está pronto!</h1>
+  <p class="sub">Ele é exclusivo e gerado só uma vez. Não saia desta página para não perdê-lo.</p>
+
+  <div class="before-after">
+    <div class="ba-card">
+      <div style="width:100%;height:200px;background:linear-gradient(135deg,#3a1a1a,#2a1515);display:flex;align-items:center;justify-content:center;font-size:48px">😔</div>
+      <div class="ba-label before">Antes</div>
+    </div>
+    <div class="ba-card">
+      <div style="width:100%;height:200px;background:linear-gradient(135deg,#1a3a1a,#152a15);display:flex;align-items:center;justify-content:center;font-size:48px">😍</div>
+      <div class="ba-label after">Depois ✨</div>
+    </div>
+  </div>
+
+  <div class="protocol-card">
+    <h3>Protocolo Completo 21 Dias 🎯</h3>
+    <div class="week"><div class="week-icon">✨</div><div class="week-info"><h4>Semana 1</h4><p>Desincha e primeiros resultados</p></div></div>
+    <div class="week"><div class="week-icon">📉</div><div class="week-info"><h4>Semana 2</h4><p>Perda de até 3 kg</p></div></div>
+    <div class="week"><div class="week-icon">⚡</div><div class="week-info"><h4>Semana 3</h4><p>Perda de 5 a 7 kg</p></div></div>
+    <div class="week"><div class="week-icon">🔥</div><div class="week-info"><h4>Semana 4 (Meta)</h4><p>Perda de 9 a 12 kg</p></div></div>
+  </div>
+
+  <div class="offer-card">
+    <h3>Receitas com Chia + Protocolo Completo</h3>
+    <p class="access">Acesso Vitalício</p>
+    <ul class="checklist">
+      <li>+50 Receitas com Chia para secar</li>
+      <li>Receitas deliciosas e práticas</li>
+      <li>Protocolo de 21 dias passo a passo</li>
+      <li>Acesso ao Aplicativo Exclusivo</li>
+      <li>Lista completa dos ingredientes e modo de preparo</li>
+      <li>Acesso vitalício ao APP e Grupo VIP</li>
+    </ul>
+    <ul class="bonus">
+      <li>Guia completo de emagrecimento</li>
+      <li>20 Shakes para acelerar resultados</li>
+      <li>20 opções de café da manhã saudável</li>
+      <li>40 sobremesas sem açúcar</li>
+    </ul>
+    <p class="price-old">TUDO ISSO DE R$109,00</p>
+    <p class="price-label">POR APENAS</p>
+    <p class="price-new">R$ 19,90</p>
+    <p class="price-installment">Ou em até 3x no cartão</p>
+    <a href="#LINK_KIRVANO_AQUI" class="btn-cta" id="ctaBtn">QUERO COMEÇAR 🥰</a>
+  </div>
+
+  <div class="guarantee">
+    <h4>🛡️ Garantia 30 Dias</h4>
+    <p>Todo produto é obrigado a dar no mínimo 7 dias de garantia, porém confiamos tanto na fórmula que oferecemos 30 dias corridos. Se você não gostar ou não funcionar pra você, reembolsaremos cada centavo, sem questionar.</p>
+  </div>
+
+  <a href="#LINK_KIRVANO_AQUI" class="btn-cta">QUERO COMEÇAR 🥰</a>
+
+  <div class="faq">
+    <h3>❓ Perguntas Frequentes</h3>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">A Receita com Chia realmente funciona?</div><div class="faq-a">Sim! A chia é cientificamente comprovada por promover saciedade e regular o intestino. Nosso método combina a chia com os ingredientes corretos para otimizar a queima de gordura.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Quanto tempo leva para ver resultados?</div><div class="faq-a">Muitas mulheres relatam redução de inchaço nos primeiros 3 dias. A perda de peso mais expressiva ocorre seguindo o protocolo de 21 dias.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">É seguro? Tem efeitos colaterais?</div><div class="faq-a">Sim, é um método 100% natural baseado em comida de verdade. Não tem contraindicações para adultos saudáveis.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Como vou receber o protocolo?</div><div class="faq-a">O acesso é enviado imediatamente para o seu e-mail após a confirmação do pagamento. Você terá acesso ao nosso aplicativo e materiais.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">E se não funcionar pra mim?</div><div class="faq-a">Você tem nossa garantia blindada de 30 dias. Se não tiver resultados, devolvemos 100% do seu dinheiro.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">O pagamento é seguro?</div><div class="faq-a">Totalmente! O pagamento é processado por uma das maiores e mais seguras plataformas de pagamentos do Brasil.</div></div>
+  </div>
+
+  <a href="#LINK_KIRVANO_AQUI" class="btn-cta">QUERO COMEÇAR 🥰</a>
+</div>
+
+<script>
+const questions = [
+  { q: "Qual seu principal objetivo?", opts: ["Emagrecer", "Reduzir inchaço", "Melhorar alimentação", "Ter mais energia"] },
+  { q: "Qual sua faixa etária?", opts: ["18-29 anos", "30-39 anos", "40-49 anos", "50+ anos"] },
+  { q: "Como é sua alimentação hoje?", opts: ["Como de tudo, sem controle", "Tento comer saudável", "Faço dieta, mas sem resultado", "Não sei por onde começar"] },
+  { q: "Com que frequência você pratica exercícios?", opts: ["Nunca", "1-2x por semana", "3-4x por semana", "Todo dia"] },
+  { q: "Você já tentou emagrecer antes?", opts: ["Sim, várias vezes", "Sim, mas desisti", "Nunca tentei", "Estou tentando agora"] },
+  { q: "Qual o maior obstáculo no seu emagrecimento?", opts: ["Falta de tempo", "Não sei o que comer", "Ansiedade/compulsão", "Falta de motivação"] },
+  { q: "Você costuma sentir inchaço abdominal?", opts: ["Sempre", "Às vezes", "Raramente", "Nunca"] },
+  { q: "Como está seu intestino?", opts: ["Preso frequentemente", "Funciona bem", "Irregular", "Uso laxantes"] },
+  { q: "Quantos kg você gostaria de perder?", opts: ["Até 5 kg", "5 a 10 kg", "10 a 20 kg", "Mais de 20 kg"] },
+  { q: "Você conhece os benefícios da chia?", opts: ["Sim, já uso", "Já ouvi falar", "Não conheço", "Quero saber mais"] },
+  { q: "Você tem tempo para preparar receitas simples?", opts: ["Sim, tenho tempo", "Pouco tempo", "Quase nenhum", "Se for rápido, sim"] },
+  { q: "Você estaria disposta a seguir um plano simples?", opts: ["Sim", "Talvez", "Depende do plano", "Não sei"] }
+];
+
+let current = 0;
+
+function startQuiz() {
+  document.getElementById('intro').classList.remove('active');
+  document.getElementById('quiz').classList.add('active');
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById('progress').style.width = ((current + 1) / questions.length * 100) + '%';
+  document.getElementById('stepLabel').textContent = `Pergunta ${current + 1} de ${questions.length}`;
+  document.getElementById('question').textContent = q.q;
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.opts.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = o;
+    btn.onclick = () => nextQuestion();
+    opts.appendChild(btn);
+  });
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    document.getElementById('quiz').classList.remove('active');
+    document.getElementById('loading').classList.add('active');
+    runLoader();
+  } else {
+    showQuestion();
+  }
+}
+
+function runLoader() {
+  let pct = 0;
+  const fill = document.getElementById('loaderFill');
+  const label = document.getElementById('loaderPct');
+  const steps = [
+    { at: 20, id: 'ls1' },
+    { at: 45, id: 'ls2' },
+    { at: 70, id: 'ls3' },
+    { at: 95, id: 'ls4' }
+  ];
+  const interval = setInterval(() => {
+    pct += Math.random() * 3 + 0.5;
+    if (pct > 100) pct = 100;
+    fill.style.width = pct + '%';
+    label.textContent = Math.floor(pct) + '%';
+    steps.forEach(s => {
+      if (pct >= s.at) document.getElementById(s.id).classList.add('done');
+    });
+    if (pct >= 100) {
+      clearInterval(interval);
+      setTimeout(() => {
+        document.getElementById('loading').classList.remove('active');
+        document.getElementById('result').classList.add('active');
+        startCountdown();
+      }, 500);
+    }
+  }, 80);
+}
+
+function startCountdown() {
+  let seconds = 600;
+  const el = document.getElementById('countdown');
+  setInterval(() => {
+    if (seconds <= 0) return;
+    seconds--;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    el.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+  }, 1000);
+}
+
+function toggleFaq(el) {
+  el.parentElement.classList.toggle('open');
+}
+</script>
+</body>
+</html>

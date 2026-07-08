@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarô Cigano — Revelação de Traição</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0008;
+  --primary: #7c2d92;
+  --accent: #c084fc;
+  --gold: #f59e0b;
+  --text: #f3e8ff;
+  --text-muted: rgba(243,232,255,0.6);
+  --card-bg: rgba(124,45,146,0.12);
+  --card-border: rgba(192,132,252,0.2);
+  --card-border-hover: rgba(192,132,252,0.6);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Radial glow background */
+body::before{
+  content:'';
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:800px;height:800px;
+  background:radial-gradient(ellipse at center, rgba(124,45,146,0.08) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:0;
+}
+
+canvas#particles{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  z-index:0;
+}
+
+#app{
+  position:relative;
+  z-index:1;
+  max-width:480px;
+  margin:0 auto;
+  padding:0 24px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ─── PROGRESS BAR ─────────────────────────── */
+#prog-wrap{
+  padding:20px 0 0;
+  display:none;
+}
+#prog-label{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:0.15em;
+  color:var(--text-muted);
+  margin-bottom:8px;
+  text-align:center;
+}
+#prog-track{
+  height:3px;
+  background:rgba(192,132,252,0.15);
+  border-radius:99px;
+  overflow:hidden;
+}
+#prog-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--primary),var(--gold));
+  border-radius:99px;
+  transition:width 400ms ease;
+  box-shadow:0 0 8px rgba(245,158,11,0.5);
+  width:0%;
+}
+
+/* ─── SCREEN ────────────────────────────────── */
+#screen{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  padding-bottom:40px;
+  contain:layout style paint;
+}
+#screen{transition:opacity 60ms ease}
+#screen.s-out{opacity:0}
+
+/* ─── INTRO ─────────────────────────────────── */
+.intro{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  text-align:center;
+  padding:40px 0 60px;
+}
+
+.cards-stage{
+  position:relative;
+  width:260px;
+  height:180px;
+  margin-top:0;
+  margin-bottom:24px;
+}
+
+.t-card{
+  position:absolute;
+  width:72px;
+  height:116px;
+  background:linear-gradient(160deg,#1a0525,#2d0a45);
+  border:1.5px solid rgba(245,158,11,0.55);
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  box-shadow:0 0 18px rgba(124,45,146,0.55),inset 0 0 16px rgba(124,45,146,0.1);
+}
+.t-card::before{
+  content:'';
+  position:absolute;
+  inset:5px;
+  border:1px solid rgba(245,158,11,0.25);
+  border-radius:4px;
+}
+.t-card::after{
+  content:'✦';
+  position:absolute;
+  bottom:8px;
+  font-size:10px;
+  color:rgba(245,158,11,0.5);
+}
+
+.t-card:nth-child(1){
+  left:10px;top:20px;
+  animation:fl1 7s ease-in-out infinite;
+}
+.t-card:nth-child(2){
+  left:94px;top:0;
+  animation:fl2 6s ease-in-out infinite;
+  z-index:2;
+}
+.t-card:nth-child(3){
+  right:10px;top:25px;
+  animation:fl3 8s ease-in-out infinite;
+}
+
+@keyframes fl1{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-18px) rotate(-5deg)}}
+@keyframes fl2{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-24px) rotate(5deg)}}
+@keyframes fl3{0%,100%{transform:translateY(0) rotate(11deg)}50%{transform:translateY(-14px) rotate(8deg)}}
+
+.intro-eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:0.2em;
+  color:var(--gold);
+  margin-bottom:16px;
+  opacity:0.8;
+}
+.intro h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(28px,7vw,40px);
+  font-weight:300;
+  line-height:1.25;
+  color:var(--text);
+  margin-bottom:24px;
+  letter-spacing:0.02em;
+}
+.intro h1 em{
+  font-style:italic;
+  color:var(--accent);
+}
+.intro-barnum{
+  font-size:13px;
+  color:rgba(243,232,255,0.4);
+  font-style:italic;
+  line-height:1.6;
+  max-width:320px;
+  text-align:center;
+  margin:0 auto 12px;
+}
+.intro-sub{
+  font-size:15px;
+  color:var(--text-muted);
+  line-height:1.65;
+  max-width:340px;
+  margin:0 auto 36px;
+}
+.btn-primary{
+  width:100%;
+  padding:18px 24px;
+  background:linear-gradient(135deg,var(--primary),#5b21b6);
+  border:none;
+  border-radius:12px;
+  color:#fff;
+  font-family:'Cinzel',serif;
+  font-size:17px;
+  letter-spacing:0.08em;
+  cursor:pointer;
+  box-shadow:0 0 30px rgba(124,45,146,0.6);
+  animation:btnPulse 2s ease-in-out infinite;
+  transition:transform 150ms,box-shadow 150ms;
+}
+@keyframes btnPulse{
+  0%,100%{box-shadow:0 0 24px rgba(124,45,146,0.5)}
+  50%{box-shadow:0 0 40px rgba(245,158,11,0.4),0 0 60px rgba(124,45,146,0.6)}
+}
+.intro-social{
+  margin-top:16px;
+  font-size:12px;
+  color:var(--text-muted);
+  letter-spacing:0.05em;
+}
+.intro-social span{color:var(--gold)}
+
+/* ─── STEP SCREEN ───────────────────────────── */
+.step-wrap{
+  padding-top:32px;
+}
+.step-eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:0.15em;
+  color:var(--gold);
+  opacity:0.8;
+  margin-bottom:20px;
+  text-align:center;
+}
+.step-sub{
+  font-size:13px;
+  color:var(--text-muted);
+  line-height:1.7;
+  margin-bottom:20px;
+  font-style:italic;
+  text-align:center;
+}
+.step-q{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(22px,5.5vw,28px);
+  font-weight:400;
+  line-height:1.35;
+  color:var(--text);
+  margin-bottom:28px;
+  text-align:center;
+}
+
+/* ─── OPTIONS ───────────────────────────────── */
+.options{display:flex;flex-direction:column;gap:12px}
+
+.opt{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 18px;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:12px;
+  cursor:pointer;
+  transition:border-color 150ms,box-shadow 150ms,background 150ms;
+}
+.opt.selected{
+  border-color:var(--gold);
+  background:rgba(245,158,11,0.1);
+  box-shadow:0 0 16px rgba(245,158,11,0.2);
+}
+.opt-icon{font-size:22px;flex-shrink:0;line-height:1}
+.opt-dot{
+  width:12px;height:12px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.opt-text{
+  font-size:15px;
+  line-height:1.45;
+  color:var(--text);
+  flex:1;
+}
+
+/* ─── INFO VISUAL (Step 3) ──────────────────── */
+.info-visual{padding:4px 0 20px}
+.info-hero-wrap{
+  width:100%;
+  border-radius:12px;
+  margin-bottom:20px;
+  background:linear-gradient(160deg,#1a0525,#2d0a45);
+  border:1px solid rgba(192,132,252,0.15);
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  min-height:80px;
+}
+.info-hero-star{
+  font-size:36px;color:rgba(245,158,11,0.45);
+  padding:40px 0;
+  pointer-events:none;
+  transition:opacity 300ms;
+}
+.info-hero-wrap.loaded .info-hero-star{opacity:0;position:absolute}
+.info-hero-img{
+  width:100%;height:auto;
+  display:block;
+  border-radius:12px;
+  opacity:0;transition:opacity 400ms;
+}
+.info-hero-wrap.loaded .info-hero-img{opacity:1}
+.info-v-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(22px,5.5vw,28px);font-weight:400;
+  color:var(--text);text-align:center;
+  line-height:1.35;margin-bottom:24px;
+}
+.info-mini-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.info-mini-card{
+  display:flex;align-items:center;gap:14px;
+  background:rgba(124,45,146,0.12);
+  border:1px solid rgba(192,132,252,0.18);
+  border-radius:12px;padding:14px 16px;
+}
+.info-mini-icon{font-size:22px;flex-shrink:0}
+.info-mini-text{font-size:14px;color:var(--text-muted);line-height:1.5}
+.info-highlight{
+  background:rgba(120,53,15,0.15);
+  border:1.5px solid rgba(245,158,11,0.4);
+  border-radius:14px;padding:20px 18px;
+  text-align:center;margin-bottom:22px;
+  font-size:15px;color:var(--text-muted);
+  line-height:1.8;font-style:italic;
+}
+.info-impact{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,6vw,30px);font-style:italic;font-weight:400;
+  color:var(--gold);text-align:center;line-height:1.4;
+  margin-bottom:28px;
+  text-shadow:0 0 16px rgba(245,158,11,0.3);
+}
+.info-separator{
+  display:flex;align-items:center;gap:12px;margin:22px 0;
+}
+.info-separator::before,.info-separator::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(245,158,11,0.5),transparent);
+}
+.info-sep-icon{font-size:14px;color:var(--gold);flex-shrink:0}
+.info-highlight-icon{font-size:28px;display:block;margin-bottom:10px}
+
+/* ─── INFO CARD ─────────────────────────────── */
+.info-card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:16px;
+  padding:32px 24px;
+  text-align:center;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  margin-top:8px;
+}
+.info-icon{
+  font-size:52px;
+  margin-bottom:20px;
+  display:block;
+  animation:pulse 3s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{filter:drop-shadow(0 0 8px rgba(245,158,11,0.4))}
+  50%{filter:drop-shadow(0 0 20px rgba(245,158,11,0.8))}
+}
+.info-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:24px;
+  font-weight:400;
+  color:var(--accent);
+  margin-bottom:16px;
+}
+.info-text{
+  font-size:14px;
+  color:var(--text-muted);
+  line-height:1.8;
+  margin-bottom:28px;
+}
+.info-text strong{color:var(--text)}
+.btn-continue{
+  width:100%;
+  padding:16px;
+  background:transparent;
+  border:1px solid var(--card-border-hover);
+  border-radius:10px;
+  color:var(--accent);
+  font-family:'Cinzel',serif;
+  font-size:14px;
+  letter-spacing:0.08em;
+  cursor:pointer;
+  transition:background 200ms,box-shadow 200ms;
+}
+.btn-continue:hover{
+  background:rgba(192,132,252,0.1);
+  box-shadow:0 0 16px rgba(192,132,252,0.2);
+}
+
+/* ─── SIGN GRID ─────────────────────────────── */
+.sign-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:4px;
+}
+.sign-card{
+  aspect-ratio:1;
+  background:rgba(124,45,146,0.20);
+  border:1px solid rgba(245,158,11,0.3);
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  cursor:pointer;
+  transition:border-color 150ms,background 150ms;
+}
+.sign-card.selected{
+  border-color:var(--gold);
+  background:rgba(245,158,11,0.12);
+  box-shadow:0 0 14px rgba(245,158,11,0.25);
+}
+.sign-svg{width:50px;height:50px;display:flex;align-items:center;justify-content:center;}
+.sign-name{
+  font-family:'Cinzel',serif;
+  font-size:9px;
+  letter-spacing:0.08em;
+  color:var(--text-muted);
+  text-align:center;
+}
+
+/* ─── LETTER GRID ───────────────────────────── */
+.letter-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+  margin-top:4px;
+}
+.letter-card{
+  aspect-ratio:1;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;
+  font-weight:400;
+  color:var(--text);
+  transition:border-color 150ms,background 150ms;
+}
+.letter-card.selected{
+  border-color:var(--accent);
+  background:rgba(192,132,252,0.18);
+  box-shadow:0 0 20px rgba(192,132,252,0.4);
+  animation:goldFlash 350ms ease forwards;
+}
+
+/* ─── LOADING ───────────────────────────────── */
+.loading{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:80vh;
+  text-align:center;
+  padding:40px 0;
+}
+.load-card{
+  width:100px;height:160px;
+  background:linear-gradient(160deg,#1a0525,#2d0a45);
+  border:2px solid rgba(245,158,11,0.6);
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:52px;
+  margin-bottom:40px;
+  box-shadow:0 0 30px rgba(124,45,146,0.6);
+  animation:spinCard 8s linear infinite;
+  position:relative;
+}
+.load-card::before{
+  content:'';
+  position:absolute;
+  inset:6px;
+  border:1px solid rgba(245,158,11,0.3);
+  border-radius:6px;
+}
+@keyframes spinCard{
+  0%{transform:rotateY(0deg)}
+  50%{transform:rotateY(180deg)}
+  100%{transform:rotateY(360deg)}
+}
+.load-bar-wrap{
+  width:100%;
+  max-width:300px;
+  height:4px;
+  background:rgba(192,132,252,0.15);
+  border-radius:99px;
+  overflow:hidden;
+  margin-bottom:32px;
+}
+.load-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--primary),var(--gold));
+  border-radius:99px;
+  box-shadow:0 0 8px rgba(245,158,11,0.6);
+  transition:width 500ms ease;
+}
+.load-texts{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.load-txt{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;
+  font-style:italic;
+  color:var(--accent);
+  opacity:0;
+  transition:opacity 500ms;
+  text-align:center;
+  line-height:1.5;
+  position:absolute;
+}
+.load-txt.active{opacity:1}
+
+/* ─── RESULT ────────────────────────────────── */
+.result{padding-top:28px;max-width:420px;margin:0 auto;width:100%;text-align:center}
+
+.result-header{
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;
+  color:var(--gold);margin-bottom:20px;line-height:2;
+  text-shadow:0 0 18px rgba(245,158,11,0.7);
+  opacity:1;
+}
+.result-title{
+  font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;
+  color:var(--accent);margin-bottom:28px;line-height:1.35;
+  text-shadow:0 0 24px rgba(192,132,252,0.45);
+}
+
+/* Flip cards */
+.flip-hint{
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;
+  color:var(--gold);margin-bottom:14px;
+  animation:pulseText 2s ease-in-out infinite;
+}
+@keyframes pulseText{0%,100%{opacity:0.55}50%{opacity:1}}
+.flip-cards{display:flex;gap:14px;margin-bottom:28px}
+.flip-card{
+  flex:1;
+  aspect-ratio:2/3.5;
+  height:auto;
+  cursor:pointer;perspective:1000px;
+}
+.flip-card-inner{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;transition:transform 0.7s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+}
+.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:20px 12px;text-align:center;
+}
+.flip-front{
+  background:linear-gradient(175deg,#1a0525 0%,#2d0a45 50%,#1a0525 100%);
+  border:2px solid rgba(245,158,11,0.45);
+  box-shadow:0 8px 32px rgba(124,45,146,0.5),inset 0 0 30px rgba(124,45,146,0.15);
+  overflow:hidden;
+}
+/* Ornate inner border */
+.flip-front::before{
+  content:'';position:absolute;inset:6px;
+  border:1px solid rgba(245,158,11,0.2);
+  border-radius:8px;pointer-events:none;
+}
+/* Corner ornaments */
+.flip-front::after{
+  content:'✦';position:absolute;bottom:10px;
+  font-size:10px;color:rgba(245,158,11,0.35);letter-spacing:4px;
+  word-spacing:4px;
+}
+.flip-front-hint{
+  font-size:9px;color:rgba(245,158,11,0.55);
+  letter-spacing:0.1em;position:relative;z-index:1;
+  font-family:'Cinzel',serif;
+}
+.flip-corner{
+  position:absolute;font-size:9px;color:rgba(245,158,11,0.3);line-height:1;
+}
+.flip-corner.tl{top:10px;left:10px}
+.flip-corner.tr{top:10px;right:10px}
+.flip-stars{
+  position:absolute;inset:0;
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(5,1fr);
+  align-items:center;justify-items:center;
+  font-size:7px;color:rgba(245,158,11,0.08);pointer-events:none;
+}
+.flip-front-icon{
+  font-size:36px;color:var(--gold);
+  text-shadow:0 0 28px rgba(245,158,11,0.8);position:relative;z-index:1;
+}
+.flip-back{transform:rotateY(180deg)}
+.flip-back.good{
+  background:linear-gradient(175deg,#011f16 0%,#064e3b 50%,#011f16 100%);
+  border:2px solid rgba(52,211,153,0.85);
+  box-shadow:0 8px 32px rgba(52,211,153,0.3),inset 0 0 30px rgba(52,211,153,0.06);
+}
+.flip-back.bad{
+  background:linear-gradient(175deg,#1a0000 0%,#7f1d1d 50%,#1a0000 100%);
+  border:2px solid rgba(248,113,113,0.85);
+  box-shadow:0 8px 32px rgba(248,113,113,0.25),inset 0 0 30px rgba(248,113,113,0.06);
+}
+.flip-back::before{
+  content:'';position:absolute;inset:6px;
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:8px;pointer-events:none;
+}
+.flip-back-icon{font-size:28px;margin-bottom:4px;position:relative;z-index:1}
+.flip-back-title{
+  font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:0.04em;
+  font-weight:600;line-height:1.5;position:relative;z-index:1;
+  width:100%;
+}
+.flip-back.good .flip-back-title{color:#86efac}
+.flip-back.bad .flip-back-title{color:#fca5a5}
+.flip-back-sub{font-size:10px;opacity:0.6;line-height:1.45;position:relative;z-index:1}
+.flip-back.good .flip-back-sub{color:#86efac}
+.flip-back.bad .flip-back-sub{color:#fca5a5}
+
+/* Alert + Hope cards */
+.alert-card,.hope-card{
+  border-radius:16px;padding:24px 22px;margin-bottom:16px;text-align:center;
+}
+.alert-card{
+  background:rgba(127,29,29,0.2);
+  animation:alertPulse 2.2s ease-in-out infinite;
+}
+@keyframes alertPulse{
+  0%,100%{border:1.5px solid rgba(252,165,165,0.35);box-shadow:none}
+  50%{border:1.5px solid rgba(252,165,165,0.75);box-shadow:0 0 18px rgba(252,165,165,0.1)}
+}
+.hope-card{
+  background:rgba(120,53,15,0.2);
+  animation:hopePulse 2.5s ease-in-out infinite;
+}
+@keyframes hopePulse{
+  0%,100%{border:1.5px solid rgba(245,158,11,0.25);box-shadow:none}
+  50%{border:1.5px solid rgba(245,158,11,0.65);box-shadow:0 0 18px rgba(245,158,11,0.1)}
+}
+.msg-icon{font-size:26px;display:block;margin-bottom:12px}
+.alert-card p{font-size:14px;line-height:1.85;color:rgba(252,165,165,0.9);margin-bottom:10px}
+.alert-card p:last-child{margin-bottom:0}
+.hope-card p{font-size:14px;line-height:1.85;color:rgba(251,191,36,0.9);margin-bottom:10px}
+.hope-card p:last-child{margin-bottom:0}
+
+/* Blocked pages */
+.blocked-section{margin-bottom:20px}
+.blocked-title{
+  font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.18em;
+  color:var(--text-muted);margin-bottom:12px;text-align:center;text-transform:uppercase;
+}
+/* Preview page (unblocked) */
+.preview-page{
+  border:2px solid rgba(245,158,11,0.5);border-radius:14px;
+  overflow:hidden;margin-bottom:16px;background:rgba(124,45,146,0.08);
+  box-shadow:0 4px 24px rgba(124,45,146,0.12),0 0 20px rgba(245,158,11,0.08);
+  position:relative;
+}
+.preview-label{
+  font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.14em;
+  color:var(--gold);text-align:center;padding:14px 0 4px;opacity:0.9;
+}
+.preview-inner{
+  padding:4px 20px 40px;text-align:left;
+}
+.preview-inner p{
+  font-size:14px;color:var(--text-muted);line-height:1.9;margin-bottom:12px;
+}
+.preview-inner .preview-highlight{
+  color:var(--accent);font-style:italic;
+}
+.preview-fade{
+  position:absolute;bottom:0;left:0;right:0;height:50px;
+  background:linear-gradient(to bottom,transparent,var(--bg));
+  pointer-events:none;
+}
+
+/* Blocked pages */
+.blocked-page{
+  position:relative;border:1px solid rgba(192,132,252,0.18);border-radius:14px;
+  overflow:hidden;margin-bottom:12px;background:rgba(124,45,146,0.08);
+  box-shadow:0 4px 24px rgba(124,45,146,0.12);
+}
+.blocked-inner{
+  padding:22px 20px;filter:blur(8px);user-select:none;pointer-events:none;
+}
+.blocked-inner p{font-size:14px;color:var(--text-muted);line-height:1.9;margin-bottom:6px;text-align:left}
+.blocked-overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:8px;background:rgba(10,0,8,0.5);backdrop-filter:blur(2px);
+}
+.lock-icon{width:40px;height:40px;filter:drop-shadow(0 0 10px rgba(124,45,146,0.8))}
+.blocked-overlay .lock-label{
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.18em;color:rgba(192,132,252,0.7);
+}
+
+/* Pages badge */
+.pages-badge{
+  text-align:center;margin:20px 0 8px;
+}
+.pages-badge-inner{
+  display:inline-block;
+  background:linear-gradient(135deg,rgba(124,45,146,0.4),rgba(91,33,182,0.4));
+  border:1.5px solid rgba(245,158,11,0.5);border-radius:30px;
+  padding:12px 28px;
+  font-family:'Cinzel',serif;font-size:14px;color:var(--gold);
+  letter-spacing:0.06em;
+  box-shadow:0 0 16px rgba(245,158,11,0.12);
+}
+.pages-badge-sub{
+  text-align:center;font-size:12px;color:var(--text-muted);
+  margin-top:6px;letter-spacing:0.03em;
+}
+
+/* CTA Button */
+.cta-main{
+  width:100%;padding:22px 24px;
+  background:linear-gradient(135deg,#7c2d92,#5b21b6,#c084fc 200%);
+  border:none;border-radius:16px;color:#fff;
+  font-family:'Cinzel',serif;font-size:16px;letter-spacing:0.06em;cursor:pointer;
+  margin:28px 0 18px;animation:ctaPulse 2.5s ease-in-out infinite;
+  line-height:1.6;text-shadow:0 1px 4px rgba(0,0,0,0.4);
+}
+@keyframes ctaPulse{
+  0%,100%{box-shadow:0 0 24px rgba(124,45,146,0.6),0 0 50px rgba(245,158,11,0.1),0 4px 20px rgba(0,0,0,0.4)}
+  50%{box-shadow:0 0 40px rgba(124,45,146,0.9),0 0 70px rgba(245,158,11,0.25),0 4px 28px rgba(0,0,0,0.5)}
+}
+.cta-main:hover{
+  transform:scale(1.02);animation-play-state:paused;
+  box-shadow:0 0 50px rgba(124,45,146,1),0 0 80px rgba(245,158,11,0.35);
+}
+.cta-price{
+  display:block;font-size:22px;color:var(--gold);
+  text-shadow:0 0 12px rgba(245,158,11,0.6);letter-spacing:0.02em;
+}
+
+/* Badges */
+.cta-badges{
+  display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+  font-size:12px;color:rgba(134,239,172,0.85);letter-spacing:0.03em;
+  margin-bottom:24px;width:fit-content;margin-left:auto;margin-right:auto;
+}
+.cta-badge{display:flex;align-items:center;gap:8px;line-height:1.5;text-align:left}
+.cta-badge::before{content:'';display:none}
+.badge-check{flex-shrink:0;margin-top:1px}
+
+/* Counter + Timer */
+.counter{
+  text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:16px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.counter-dot{
+  width:9px;height:9px;border-radius:50%;background:#ef4444;
+  animation:blink 1.2s ease-in-out infinite;flex-shrink:0;box-shadow:0 0 6px #ef4444;
+}
+@keyframes blink{
+  0%,100%{opacity:1;box-shadow:0 0 6px #ef4444}
+  50%{opacity:0.25;box-shadow:none}
+}
+.urgency-timer{
+  text-align:center;font-family:'Cinzel',serif;font-size:13px;color:#ef4444;
+  letter-spacing:0.1em;margin-bottom:48px;opacity:0.9;
+}
+
+/* ─── PROVA SOCIAL ──────────────────────────── */
+.social-proof{margin-bottom:28px}
+.social-label{
+  text-align:center;
+  font-family:'Cinzel',serif;font-size:15px;
+  color:rgba(245,158,11,0.85);letter-spacing:0.12em;
+  margin-bottom:16px;
+}
+.dep-carousel{
+  display:flex;overflow-x:auto;gap:12px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:8px;
+  scrollbar-width:none;
+}
+.dep-carousel::-webkit-scrollbar{display:none}
+.dep-card{
+  flex:0 0 82%;scroll-snap-align:start;
+  border-radius:14px;overflow:hidden;
+  border:1px solid rgba(192,132,252,0.2);
+}
+.dep-card img{
+  width:100%;height:auto;display:block;
+  border-radius:14px;
+}
+.dep-dots{
+  display:flex;justify-content:center;gap:6px;margin-top:10px;
+}
+.dep-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(245,158,11,0.25);
+  transition:background 300ms;cursor:pointer;
+}
+.dep-dot.active{background:rgba(245,158,11,0.8)}
+.dep-stack{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
+.dep-stack-img{
+  width:100%;height:auto;display:block;
+  border-radius:14px;border:1px solid rgba(192,132,252,0.2);
+}
+.social-count{
+  text-align:center;
+  font-size:11px;color:rgba(245,158,11,0.55);
+  letter-spacing:0.06em;margin-top:14px;margin-bottom:0;
+}
+
+/* ─── GARANTIA ───────────────────────────────── */
+.guarantee-section{
+  text-align:center;
+  padding:28px 24px 32px;
+  margin:8px 0 8px;
+  background:rgba(255,255,255,0.03);
+  border-top:1px solid rgba(192,132,252,0.12);
+  border-bottom:1px solid rgba(192,132,252,0.12);
+}
+.guarantee-img{
+  width:110px;height:110px;object-fit:contain;
+  display:block;margin:0 auto 12px;
+  filter:drop-shadow(0 0 12px rgba(134,239,172,0.2));
+}
+.guarantee-sub{
+  font-size:12px;color:var(--text-muted);line-height:1.7;
+  max-width:280px;margin:0 auto;opacity:0.8;
+}
+
+/* ─── BODY CARDS ────────────────────────────── */
+.body-card{
+  background:rgba(20,5,30,0.6);
+  border-left:3px solid rgba(192,132,252,0.4);
+  border-radius:8px;padding:16px;margin-bottom:12px;
+  font-size:14px;color:var(--text-muted);line-height:1.9;
+}
+.body-card.warning{
+  background:rgba(10,2,15,0.75);
+  border-left:3px solid #f59e0b;
+  font-style:italic;color:rgba(245,158,11,0.88);
+}
+
+/* ─── SECTION SEPARATOR ─────────────────────── */
+.section-sep{
+  display:flex;align-items:center;gap:12px;
+  margin:24px 0;
+}
+.section-sep::before,.section-sep::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(124,45,146,0.5),transparent);
+}
+.section-sep span{
+  font-size:12px;color:rgba(245,158,11,0.5);flex-shrink:0;
+}
+
+/* ─── TESTIMONIAL CARDS ─────────────────────── */
+.test-card{
+  background:rgba(20,5,30,0.65);
+  border:1px solid rgba(192,132,252,0.2);
+  border-radius:14px;padding:18px;margin-bottom:12px;
+}
+.test-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.test-avatar{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#7c2d92,#5b21b6);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:16px;color:#fff;font-weight:700;
+}
+.test-info{flex:1}
+.test-name{font-size:13px;color:var(--text);font-weight:600;margin-bottom:2px}
+.test-location{font-size:11px;color:var(--text-muted)}
+.test-stars{font-size:12px;color:var(--gold);margin-top:3px}
+.test-quote{font-size:13px;color:rgba(243,232,255,0.75);line-height:1.85;font-style:italic}
+
+/* ─── BONUS SECTION ──────────────────────────── */
+.bonus-section{margin-bottom:0}
+.bonus-label{
+  text-align:center;font-family:'Cinzel',serif;font-size:15px;
+  color:rgba(245,158,11,0.85);letter-spacing:0.12em;margin-bottom:6px;
+}
+.bonus-subtitle{text-align:center;font-size:12px;color:var(--text-muted);margin-bottom:16px}
+.bonus-card{
+  background:rgba(20,5,30,0.5);
+  border:1px solid rgba(192,132,252,0.18);border-radius:12px;
+  padding:18px 20px;margin-bottom:10px;
+  display:flex;align-items:center;gap:16px;
+}
+.bonus-icon{font-size:26px;flex-shrink:0}
+.bonus-cover{
+  width:64px;height:64px;flex-shrink:0;
+  object-fit:cover;border-radius:8px;
+  border:1px solid rgba(192,132,252,0.25);
+}
+.bonus-body{flex:1;min-width:0}
+.bonus-title{font-size:14px;color:var(--text);font-weight:600;margin-bottom:5px;line-height:1.4}
+.bonus-desc{font-size:12.5px;color:var(--text-muted);line-height:1.65;margin-bottom:0}
+.bonus-original{font-size:11px;color:rgba(192,132,252,0.5);text-decoration:line-through;margin-right:6px}
+.bonus-free{font-size:11px;color:#86efac;font-weight:600;letter-spacing:0.04em}
+.bonus-summary{
+  text-align:center;
+  background:rgba(124,45,146,0.1);
+  border:1px solid rgba(192,132,252,0.2);
+  border-radius:12px;padding:18px;margin-top:4px;
+}
+.bonus-total{font-size:13px;color:rgba(192,132,252,0.5);text-decoration:line-through;margin-bottom:6px}
+.bonus-you-pay{font-size:22px;color:#fff;font-weight:700;margin-bottom:6px}
+.bonus-access{font-size:12px;color:rgba(245,158,11,0.75);font-style:italic}
+
+/* ─── O QUE VOCÊ RECEBE ─────────────────────── */
+.offer-section{margin-bottom:0}
+.offer-label{
+  text-align:center;font-family:'Cinzel',serif;font-size:15px;
+  color:rgba(245,158,11,0.85);letter-spacing:0.12em;margin-bottom:16px;
+}
+.offer-card{
+  background:linear-gradient(135deg,rgba(124,45,146,0.3),rgba(30,10,50,0.9));
+  border:2px solid rgba(245,158,11,0.6);
+  border-radius:16px;padding:24px;
+  box-shadow:0 0 30px rgba(124,45,146,0.4);
+}
+.offer-title{
+  font-family:'Cinzel',serif;font-size:17px;font-weight:600;
+  color:#f59e0b;text-align:center;margin-bottom:16px;letter-spacing:0.04em;
+  text-shadow:0 0 16px rgba(245,158,11,0.5);
+}
+.offer-divider{
+  height:1px;margin:16px 0;
+  background:linear-gradient(90deg,transparent,rgba(245,158,11,0.5),transparent);
+}
+.offer-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.offer-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text-muted);line-height:1.6}
+.offer-check{color:#86efac;font-size:14px;flex-shrink:0;margin-top:1px;font-weight:700}
+.offer-bonus-label{
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.08em;
+  color:#c084fc;margin-bottom:12px;
+}
+.offer-bonus-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.offer-bonus-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text-muted);line-height:1.6}
+.offer-value{text-align:center;padding-top:4px}
+.offer-value-label{font-size:11px;color:rgba(243,232,255,0.4);margin-bottom:6px}
+.offer-strike{font-size:22px;color:rgba(243,232,255,0.35);text-decoration:line-through;margin-bottom:4px}
+.offer-arrow{font-size:18px;color:rgba(245,158,11,0.5);margin-bottom:6px}
+.offer-you-pay{font-size:12px;color:#86efac;margin-bottom:4px;letter-spacing:0.04em}
+.offer-price{
+  font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:var(--gold);
+  animation:ctaPulse 2.5s ease-in-out infinite;display:inline-block;
+}
+.offer-terms{font-size:11px;color:rgba(243,232,255,0.4);margin-top:8px}
+.offer-guarantee{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:16px;font-size:12px;color:rgba(134,239,172,0.75);
+  background:rgba(134,239,172,0.05);border:1px solid rgba(134,239,172,0.2);
+  border-radius:8px;padding:10px 14px;text-align:center;
+}
+
+/* ─── PRICE ANCHOR ───────────────────────────── */
+.price-anchor{
+  border:1px solid rgba(245,158,11,0.4);
+  border-radius:12px;padding:16px 20px;margin-bottom:0;
+  text-align:center;font-size:13px;color:var(--text-muted);line-height:1.9;
+  background:rgba(245,158,11,0.04);
+}
+.price-anchor strong{color:#fff}
+
+/* ─── FIXED TIMER HEADER ────────────────────── */
+#fixed-timer{
+  display:none;
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  background:#7f1d1d;
+  padding:10px 16px;
+  text-align:center;
+  font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.08em;
+  color:#fff;
+  box-shadow:0 2px 16px rgba(239,68,68,0.5);
+  animation:timerHeaderPulse 2s ease-in-out infinite;
+}
+@keyframes timerHeaderPulse{
+  0%,100%{background:#7f1d1d}
+  50%{background:#991b1b}
+}
+#fixed-timer.visible{display:block}
+body.has-fixed-timer #app{padding-top:44px}
+
+/* ─── RESPONSIVE ────────────────────────────── */
+@media(min-width:520px){
+  .sign-grid{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:380px){
+  .sign-grid{grid-template-columns:repeat(3,1fr)}
+  .letter-grid{grid-template-columns:repeat(5,1fr)}
+  .sign-svg{width:38px;height:38px}
+  .step-q{font-size:20px}
+}
+</style>
+
+<!-- Utmify UTM Capture -->
+<script
+  src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+  data-utmify-prevent-xcod-sck
+  data-utmify-prevent-subids
+  async
+  defer
+></script>
+
+<!-- Utmify Pixel -->
+<script>
+  window.pixelId = "69cc35d0c52505f42b4e2209";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  document.head.appendChild(a);
+</script>
+</head>
+<body>
+<div id="fixed-timer">⏳ Esta leitura expira em: <span id="fixed-timer-display">14:59</span></div>
+<canvas id="particles"></canvas>
+<div id="app">
+  <div id="prog-wrap">
+    <div id="prog-label">Etapa 1 de 12</div>
+    <div id="prog-track"><div id="prog-fill"></div></div>
+  </div>
+  <div id="screen"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W,H,particles=[],mx=0,my=0,paused=false,rafId=null,mousePending=false;
+
+  function resize(){
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+  }
+
+  function mkP(){
+    return{
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.8+0.3,
+      vx:(Math.random()-.5)*.25,
+      vy:(Math.random()-.5)*.25-.08,
+      a:Math.random()*.6+.2,
+      da:(Math.random()-.5)*.008,
+      gold:Math.random()>.72
+    };
+  }
+
+  function init(){
+    resize();
+    particles=[];
+    for(let i=0;i<12;i++) particles.push(mkP());
+  }
+
+  function draw(){
+    if(paused){rafId=null;return;}
+    ctx.clearRect(0,0,W,H);
+    const px=mx/W-.5, py=my/H-.5;
+    let lastGold=null;
+    particles.forEach(p=>{
+      p.x+=p.vx+px*.06;
+      p.y+=p.vy+py*.03;
+      p.a+=p.da;
+      if(p.a>0.85){p.a=0.85;p.da*=-1;}
+      if(p.a<0.1){p.a=0.1;p.da*=-1;}
+      if(p.y<-5) p.y=H+5;
+      if(p.x<-5) p.x=W+5;
+      if(p.x>W+5) p.x=-5;
+      if(p.gold!==lastGold){ctx.fillStyle=p.gold?'#f59e0b':'#c084fc';lastGold=p.gold;}
+      ctx.globalAlpha=p.a;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    rafId=requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize',init);
+  window.addEventListener('mousemove',e=>{
+    if(!mousePending){
+      mousePending=true;
+      requestAnimationFrame(()=>{mx=e.clientX;my=e.clientY;mousePending=false;});
+    }
+  },{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){paused=true;}
+    else{paused=false;if(!rafId)draw();}
+  });
+  init();draw();
+})();
+
+// ═══════════════════════════════════════════════
+// ANALYTICS TRACKING
+// ═══════════════════════════════════════════════
+const _sid = Date.now()+'-'+Math.random().toString(36).slice(2,8);
+const _SB_URL = 'https://qxqaxwcdqismltohmhzg.supabase.co';
+const _SB_KEY = 'sb_publishable_4aYRaFGqaZnKYCxl4-3dVQ_3Krgw9N5';
+function trackStep(step,label){
+  if(typeof fbq==='function') /* COLE SEU PIXEL AQUI */;
+  try{
+    navigator.sendBeacon(_SB_URL+'/rest/v1/quiz_events',
+      new Blob([JSON.stringify({session_id:_sid,step,label})],{type:'application/json'})
+    );
+    // Fallback headers via fetch for sendBeacon (no custom headers)
+    fetch(_SB_URL+'/rest/v1/quiz_events',{
+      method:'POST',keepalive:true,
+      headers:{'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({session_id:_sid,step,label})
+    }).catch(()=>{});
+  }catch(e){}
+}
+trackStep(0,'intro');
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const state = {
+  step: 0, // 0=intro, 1-12=steps, 13=loading, 14=result
+  answers: {
+    sentimento:'', tempo:'', situacao:'',
+    comportamento:'', desencadeador:'', frequencia:'',
+    foco:'', signo_dele:'', signo_dela:'', inicial:''
+  }
+};
+
+const SIGNS = [
+  {name:'Áries',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M30,38 C22,38 14,32 14,22 C14,14 20,10 26,14 C28,16 30,22 30,26 C30,22 32,16 34,14 C40,10 46,14 46,22 C46,32 38,38 30,38" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="30" y1="38" x2="30" y2="48" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><line x1="22" y1="48" x2="38" y2="48" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'Touro',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="38" r="14" stroke="#f59e0b" stroke-width="2"/><path d="M16,32 C10,22 14,10 22,10" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><path d="M44,32 C50,22 46,10 38,10" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'Gêmeos',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="14" x2="20" y2="46" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><line x1="40" y1="14" x2="40" y2="46" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><path d="M20,14 C26,10 34,10 40,14" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><path d="M20,46 C26,50 34,50 40,46" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="30" x2="40" y2="30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'Câncer',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M30,30 C40,26 48,18 42,12 C36,6 24,10 22,18 C20,26 26,30 30,30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><path d="M30,30 C20,34 12,42 18,48 C24,54 36,50 38,42 C40,34 34,30 30,30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="22" r="3" stroke="#f59e0b" stroke-width="1.5"/><circle cx="48" cy="38" r="3" stroke="#f59e0b" stroke-width="1.5"/></svg>`},
+  {name:'Leão',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="26" r="12" stroke="#f59e0b" stroke-width="2"/><path d="M34,26 C42,26 50,32 46,42 C42,50 32,50 30,48" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><circle cx="30" cy="48" r="3" fill="#f59e0b"/></svg>`},
+  {name:'Virgem',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10,12 L10,40 Q10,46 16,46 Q20,46 20,40 L20,18 Q20,12 26,12 Q32,12 32,18 L32,40 Q32,46 38,46 Q42,46 44,42 C40,38 36,40 38,44" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`},
+  {name:'Libra',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18,36 Q18,22 30,18 Q42,22 42,36" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="38" x2="52" y2="38" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="46" x2="52" y2="46" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'Escorpião',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10,12 L10,36 Q10,42 16,42 Q20,42 20,36 L20,16 Q20,10 26,10 Q32,10 32,16 L32,36 Q32,44 40,44 L50,34" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="44,34 50,34 48,28" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`},
+  {name:'Sagitário',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="48" x2="48" y2="12" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><polyline points="30,12 48,12 48,30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="32" x2="42" y2="32" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'Capricórnio',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10,12 L10,38 Q10,44 16,44 Q20,44 20,38 L20,24 L28,38" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M28,38 Q28,48 34,50 Q42,52 44,44 Q46,36 40,32 Q34,28 28,32 Q22,36 22,44" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'Aquário',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6,24 Q12,17 18,24 Q24,31 30,24 Q36,17 42,24 Q48,31 54,24" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><path d="M6,36 Q12,29 18,36 Q24,43 30,36 Q36,29 42,36 Q48,43 54,36" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`},
+  {name:'Peixes',
+   svg:`<svg width="50" height="50" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14,30 Q14,14 30,10 Q46,14 46,30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><path d="M14,30 Q14,46 30,50 Q46,46 46,30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="30" x2="50" y2="30" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`}
+];
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+// ═══════════════════════════════════════════════
+// STEPS DATA
+// ═══════════════════════════════════════════════
+const STEPS = [
+  // Step 1
+  {
+    type:'question', key:'sentimento',
+    sub:'As cartas precisam sentir sua dor pra revelar a verdade.',
+    q:'O que você está sentindo agora?',
+    opts:[
+      {e:'🔥', t:'Tenho certeza que ele está me traindo', v:'certeza-traicao'},
+      {e:'😤', t:'Ele me ignorou e foi logo pra outra', v:'foi-pra-outra'},
+      {e:'🔍', t:'Algo mudou e eu sei que tem alguém', v:'algo-mudou'},
+      {e:'💔', t:'Ele me bloqueou e sumiu sem explicação', v:'bloqueou-sumiu'}
+    ]
+  },
+  // Step 2
+  {
+    type:'question', key:'tempo',
+    sub:'Quanto mais tempo juntos, mais forte o fio que conecta vocês.',
+    q:'Há quanto tempo vocês estão juntos?',
+    opts:[
+      {e:'🌱', t:'Menos de 6 meses', v:'menos-6m'},
+      {e:'🌙', t:'Entre 6 meses e 2 anos', v:'6m-2a'},
+      {e:'⭐', t:'Entre 2 e 5 anos', v:'2a-5a'},
+      {e:'🌟', t:'Mais de 5 anos', v:'mais-5a'}
+    ]
+  },
+  // Step 3 - Info Visual
+  {
+    type:'info-visual',
+    title:'Como o tarô amoroso faz ele voltar de joelhos?',
+    cards:[
+      {icon:'✦', text:'Essa é uma das práticas mais antigas do mundo, sendo praticada por milhares de mulheres.'},
+      {icon:'🧿', text:'Através das cartas, é possível enviar energias e pensamentos para a mente dele, influenciando e gerando a vontade de voltar pra você.'},
+      {icon:'🔮', text:'Esse método foi criado por uma cigana em 1970 e consiste em usar magia e energia a favor da praticante.'}
+    ],
+    highlight:'Essas cartas abrem um caminho para que ele sinta o que você quer que ele sinta.',
+    impact:'Saudade. Arrependimento. A certeza de que errou em te perder.',
+    btn:'Quero esse poder →'
+  },
+  // Step 4
+  {
+    type:'question', key:'situacao',
+    sub:'Isso muda tudo na leitura. Seja honesta.',
+    q:'Como está a situação entre vocês agora?',
+    opts:[
+      {e:'🔥', t:'Estamos juntos mas ele está me traindo', v:'juntos-traindo'},
+      {e:'👀', t:'Ele sumiu e foi logo pra outra', v:'sumiu-outra'},
+      {e:'💔', t:'Me bloqueou e não dá satisfação', v:'bloqueou'},
+      {e:'⚡', t:'Terminamos mas eu sei que ainda tem algo', v:'terminou-algo'}
+    ]
+  },
+  // Step 5
+  {
+    type:'question', key:'comportamento',
+    sub:'Você não é louca. As cartas confirmam o que seu instinto já sabe.',
+    q:'O que você percebeu nele?',
+    opts:[
+      {dot:'#ef4444', t:'Vira o celular pra você ou trocou a senha', v:'celular'},
+      {dot:'#f59e0b', t:'Posta stories e não te responde', v:'stories'},
+      {dot:'#f97316', t:'Ficou frio do nada sem nenhuma explicação', v:'frio'},
+      {dot:'#9ca3af', t:'Terminou e apareceu com outra em menos de uma semana', v:'outra-semana'}
+    ]
+  },
+  // Step 6
+  {
+    type:'question', key:'desencadeador',
+    sub:'O momento que você sentiu no peito. As cartas precisam desse gatilho.',
+    q:'O que te fez ter certeza?',
+    opts:[
+      {e:'👁️', t:'Vi algo no celular ou nas redes sociais dele', v:'vi-concreto'},
+      {e:'🌀', t:'Simplesmente comecei a sentir isso', v:'intuicao'},
+      {e:'👂', t:'Alguém me contou ou eu ouvi algo', v:'alguem-contou'},
+      {e:'📉', t:'Ele simplesmente mudou completamente do nada', v:'mudou-do-nada'}
+    ]
+  },
+  // Step 7
+  {
+    type:'question', key:'frequencia',
+    sub:'Quanto mais forte a dor, mais poderosa a revelação.',
+    q:'Com que frequência isso te consome?',
+    opts:[
+      {e:'🌊', t:'Todo dia, fico stalkeando ele sem parar', v:'todo-dia'},
+      {e:'🌙', t:'Às vezes, mas quando penso sempre machuca', v:'as-vezes'},
+      {e:'⚡', t:'Várias vezes ao dia, isso acaba com a minha energia', v:'varias-vezes'},
+      {e:'🌱', t:'Ele saiu da minha vida e eu não consigo aceitar', v:'nao-aceito'}
+    ]
+  },
+  // Step 8 - Info Visual
+  {
+    type:'info-visual',
+    hero:false,
+    title:'As cartas fazem o que nenhuma conversa, story ou ficante consegue.',
+    cards:[
+      {icon:'💬', text:'Conversa? Ele ignora.'},
+      {icon:'📱', text:'Story? Ele visualiza e não responde.'},
+      {icon:'👤', text:'Ficante? Ele não liga.'}
+    ],
+    separator:true,
+    highlightIcon:'🔮',
+    highlight:'Você não precisa confrontar, perguntar ou aparecer desesperada.\n\nO tarô cigano consegue identificar e reverter os pensamentos dele, e revelar o que fazer para virar o jogo sem que ele perceba que você está causando isso.',
+    impact:'Essa é a diferença entre implorar\ne fazer ele implorar.',
+    btn:'Continuar →'
+  },
+  // Step 9
+  {
+    type:'question', key:'foco',
+    sub:'As cartas vão te dar poder. Escolha onde quer atacar primeiro.',
+    q:'O que você mais quer agora?',
+    opts:[
+      {e:'💜', t:'Saber com quem ele está e o que está acontecendo', v:'saber-quem'},
+      {e:'🌑', t:'Fazer ele sentir a minha falta de verdade', v:'sentir-falta'},
+      {e:'🔐', t:'Entender o que passa na cabeça dele', v:'entender-cabeca'},
+      {e:'🔮', t:'Virar o jogo e tomar o controle', v:'virar-jogo'}
+    ]
+  },
+  // Step 10 - Signs (partner)
+  {
+    type:'signs', key:'signo_dele',
+    sub:'O signo dele revela o ponto fraco. É por ali que você entra.',
+    q:'Qual é o signo dele?'
+  },
+  // Step 11 - Signs (self)
+  {
+    type:'signs', key:'signo_dela',
+    sub:'A combinação dos signos revela onde ele ainda é vulnerável a você.',
+    q:'E o seu signo?'
+  },
+  // Step 12 - Letters
+  {
+    type:'letters', key:'inicial',
+    sub:'Última etapa. A inicial conecta a magia diretamente a ele.',
+    q:'Qual é a inicial dele?'
+  }
+];
+
+// ═══════════════════════════════════════════════
+// TRANSITION
+// ═══════════════════════════════════════════════
+function transition(renderFn){
+  const screen = document.getElementById('screen');
+  screen.classList.add('s-out');
+  window.scrollTo(0,0);
+  setTimeout(()=>{
+    renderFn();
+    screen.classList.remove('s-out');
+  }, 70);
+}
+
+// ═══════════════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════════════
+function updateProgress(step){
+  const wrap = document.getElementById('prog-wrap');
+  const fill = document.getElementById('prog-fill');
+  const label = document.getElementById('prog-label');
+  if(step >= 1 && step <= 12){
+    wrap.style.display = 'block';
+    label.textContent = `Etapa ${step} de 12`;
+    fill.style.width = ((step/12)*100)+'%';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SELECT OPTION
+// ═══════════════════════════════════════════════
+let _selOpt=null, _selSign=null, _selLetter=null;
+
+function selectOpt(el, key, value){
+  if(_selOpt) _selOpt.classList.remove('selected');
+  _selOpt = el;
+  el.classList.add('selected');
+  state.answers[key] = value;
+  setTimeout(goNext, 200);
+}
+
+function selectSign(el, key, name){
+  if(_selSign) _selSign.classList.remove('selected');
+  _selSign = el;
+  el.classList.add('selected');
+  state.answers[key] = name;
+  setTimeout(goNext, 180);
+}
+
+function selectLetter(el, letter){
+  if(_selLetter) _selLetter.classList.remove('selected');
+  _selLetter = el;
+  el.classList.add('selected');
+  state.answers.inicial = letter;
+  setTimeout(goNext, 180);
+}
+
+// ═══════════════════════════════════════════════
+// GO NEXT
+// ═══════════════════════════════════════════════
+const STEP_LABELS=['','Sentimento','Tempo','Info Tarô','Situação','Comportamento','Desencadeador','Frequência','Info Cartas','Foco','Signo Dele','Signo Dela','Inicial'];
+function goNext(){
+  state.step++;
+  if(state.step > 12){
+    trackStep(13,'loading');
+    startLoading();
+  } else {
+    trackStep(state.step, STEP_LABELS[state.step]||'Step '+state.step);
+    updateProgress(state.step);
+    transition(()=>renderStep(state.step));
+  }
+}
+
+// ═══════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════
+function renderStep(n){
+  const data = STEPS[n-1];
+  if(!data) return;
+  if(data.type === 'question') renderQuestion(data);
+  else if(data.type === 'info') renderInfo(data);
+  else if(data.type === 'info-visual') renderInfoVisual(data);
+  else if(data.type === 'signs') renderSigns(data);
+  else if(data.type === 'letters') renderLetters(data);
+}
+
+function renderQuestion(data){
+  const screen = document.getElementById('screen');
+  screen.innerHTML = `
+    <div class="step-wrap">
+      <div class="step-sub">${data.sub.replace(/\n/g,'<br>')}</div>
+      <div class="step-q">${data.q}</div>
+      <div class="options">
+        ${data.opts.map((o,i)=>{
+          let left = o.dot
+            ? `<span class="opt-dot" style="background:${o.dot}"></span>`
+            : `<span class="opt-icon">${o.e}</span>`;
+          return `<div class="opt" data-val="${o.v}" onclick="selectOpt(this,'${data.key}','${o.v}')">
+            ${left}
+            <span class="opt-text">${o.t}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  // Animate options in sequence
+}
+
+function renderInfoVisual(data){
+  const screen = document.getElementById('screen');
+  const heroHTML = data.hero !== false
+    ? `<div class="info-hero-wrap">
+         <span class="info-hero-star">✦</span>
+         <img class="info-hero-img" loading="lazy"
+              src="tarot-hero.png" alt=""
+              onload="this.parentElement.classList.add('loaded')"
+              onerror="this.style.display='none'">
+       </div>`
+    : '';
+  const sepHTML = data.separator
+    ? `<div class="info-separator"><span class="info-sep-icon">✦</span></div>`
+    : '';
+  const hlIcon = data.highlightIcon
+    ? `<span class="info-highlight-icon">${data.highlightIcon}</span>`
+    : '';
+  screen.innerHTML = `
+    <div class="step-wrap">
+      <div class="info-visual">
+        <div class="info-v-title">${data.title}</div>
+        ${heroHTML}
+        <div class="info-mini-cards">
+          ${data.cards.map(c=>`
+            <div class="info-mini-card">
+              <span class="info-mini-icon">${c.icon}</span>
+              <span class="info-mini-text">${c.text}</span>
+            </div>`).join('')}
+        </div>
+        ${sepHTML}
+        <div class="info-highlight">${hlIcon}${data.highlight}</div>
+        <div class="info-impact">${data.impact.replace(/\n/g,'<br>')}</div>
+        <button class="btn-continue" onclick="goNext()">${data.btn}</button>
+      </div>
+    </div>`;
+}
+
+function renderInfo(data){
+  const screen = document.getElementById('screen');
+  screen.innerHTML = `
+    <div class="step-wrap">
+      <div class="info-card">
+        <span class="info-icon">${data.icon}</span>
+        <div class="info-title">${data.title}</div>
+        <div class="info-text">${data.text.replace(/\n/g,'<br><br>')}</div>
+        <button class="btn-continue" onclick="goNext()">${data.btn}</button>
+      </div>
+    </div>`;
+}
+
+function renderSigns(data){
+  const screen = document.getElementById('screen');
+  screen.innerHTML = `
+    <div class="step-wrap">
+      <div class="step-sub">${data.sub}</div>
+      <div class="step-q">${data.q}</div>
+      <div class="sign-grid">
+        ${SIGNS.map((s,i)=>`
+          <div class="sign-card"                onclick="selectSign(this,'${data.key}','${s.name}')"
+>
+            <div class="sign-svg">${s.svg}</div>
+            <div class="sign-name">${s.name}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderLetters(data){
+  const screen = document.getElementById('screen');
+  screen.innerHTML = `
+    <div class="step-wrap">
+      <div class="step-sub">${data.sub}</div>
+      <div class="step-q">${data.q}</div>
+      <div class="letter-grid">
+        ${LETTERS.map((l,i)=>`
+          <div class="letter-card"                onclick="selectLetter(this,'${l}')">${l}</div>`).join('')}
+      </div>
+    </div>`;
+}
+
+
+// ═══════════════════════════════════════════════
+// LOADING
+// ═══════════════════════════════════════════════
+function startLoading(){
+  updateProgress(0);
+  const A = state.answers;
+
+  const texts = [
+    `Interpretando a energia de <em>${A.signo_dele}</em> e <em>${A.signo_dela}</em>...`,
+    `Escaneando a presença de terceiros ao redor do vínculo...`,
+    `Identificando onde ele ainda é vulnerável a você...`,
+    `Carta dominante encontrada...`,
+    `<strong style="color:#f59e0b">A Torre em posição direta.</strong>`,
+    `✦ O que ele esconde está prestes a ser revelado. ✦`
+  ];
+
+  const screen = document.getElementById('screen');
+  screen.classList.remove('s-out','s-in');
+  screen.innerHTML = `
+    <div class="loading">
+      <div class="load-card">⚡</div>
+      <div class="load-bar-wrap"><div class="load-bar" id="lbar"></div></div>
+      <div class="load-texts" style="position:relative;width:100%;max-width:320px;height:72px">
+        ${texts.map((t,i)=>`<div class="load-txt" id="lt${i}">${t}</div>`).join('')}
+      </div>
+    </div>`;
+
+  const bar = document.getElementById('lbar');
+  let phase = 0;
+
+  function nextPhase(){
+    if(phase > 0){
+      const prev = document.getElementById(`lt${phase-1}`);
+      if(prev) prev.classList.remove('active');
+    }
+    if(phase < texts.length){
+      const cur = document.getElementById(`lt${phase}`);
+      if(cur) cur.classList.add('active');
+      bar.style.width = ((phase+1)/texts.length*100)+'%';
+      phase++;
+      if(phase < texts.length){
+        setTimeout(nextPhase, 700);
+      } else {
+        setTimeout(showResult, 800);
+      }
+    }
+  }
+
+  setTimeout(nextPhase, 400);
+}
+
+function tempoLabel(v){
+  const map = {
+    'menos-6m':'menos de 6 meses',
+    '6m-2a':'1 a 2 anos',
+    '2a-5a':'2 a 5 anos',
+    'mais-5a':'mais de 5 anos'
+  };
+  return map[v] || v;
+}
+
+// ═══════════════════════════════════════════════
+// RESULT
+// ═══════════════════════════════════════════════
+const SVG_LOCK = `<svg class="lock-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="18" width="24" height="17" rx="4" stroke="#c084fc" stroke-width="1.6"/><path d="M13 18 L13 13 Q13 7 20 7 Q27 7 27 13 L27 18" stroke="#c084fc" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="27" r="2.5" fill="#c084fc"/><line x1="20" y1="27" x2="20" y2="31" stroke="#c084fc" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+const CHECK_SVG = `<svg class="badge-check" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="#86efac" stroke-width="1"/><path d="M4 7 L6 9 L10 5" stroke="#86efac" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const STARS = Array(12).fill('✦').map(s=>`<span>${s}</span>`).join('');
+
+function showResult(){
+  trackStep(14,'resultado');
+  const A = state.answers;
+  const screen = document.getElementById('screen');
+
+  screen.innerHTML = `
+    <div class="result">
+
+      <div class="result-header">
+        🔮 REVELAÇÃO PARA ${A.signo_dela.toUpperCase()} — VÍNCULO COM ${A.signo_dele.toUpperCase()} — INICIAL ${A.inicial}
+      </div>
+
+      <div class="result-title">As cartas confirmaram o que<br>você já sentia</div>
+
+      <div class="flip-hint">✦ Toque para revelar ✦</div>
+
+      <div class="flip-cards">
+        <div class="flip-card" id="fc-good" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-front">
+              <span class="flip-corner tl">✦</span><span class="flip-corner tr">✦</span>
+              <div class="flip-stars">${STARS}</div>
+              <span class="flip-front-icon">✦</span>
+              <div class="flip-front-hint">Toque para revelar</div>
+            </div>
+            <div class="flip-back good">
+              <div class="flip-back-title">Ele ainda sente algo<br>por&nbsp;você</div>
+              <div class="flip-back-sub">O vínculo original ainda está vivo</div>
+            </div>
+          </div>
+        </div>
+        <div class="flip-card" id="fc-bad" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-front">
+              <span class="flip-corner tl">✦</span><span class="flip-corner tr">✦</span>
+              <div class="flip-stars">${STARS}</div>
+              <span class="flip-front-icon">✦</span>
+              <div class="flip-front-hint">Toque para revelar</div>
+            </div>
+            <div class="flip-back bad">
+              <div class="flip-back-title">Mas está se distanciando</div>
+              <div class="flip-back-sub">Uma energia externa foi confirmada</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="body-card">O universo traz notícias boas, mas também um alerta.</div>
+      <div class="body-card">A Carta da Torre apareceu como dominante na sua revelação.</div>
+      <div class="body-card">No tarô amoroso, ela indica uma verdade que está prestes a vir à tona, e um ponto de virada onde quem agir primeiro sai na frente.</div>
+      <div class="body-card">As cartas identificaram uma presença de energia externa. Uma outra mulher foi confirmada na vida dele. E cada vez mais ele se apega nela, e sua chance de tomar o controle de volta vai se tornando cada vez menor.</div>
+      <div class="body-card">Mas há algo mais: as cartas identificaram onde ele ainda é vulnerável a você. E como você pode usar essas vulnerabilidades para fazê-lo voltar implorando de joelhos.</div>
+      <div class="body-card">Essa informação está nas próximas páginas.</div>
+      <div class="body-card warning">Mas cuidado, uma vez que a magia é utilizada, ele nunca mais vai te esquecer.</div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:20px;margin:24px 0;text-align:center;">
+        <p style="font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.08em;color:var(--gold);margin-bottom:12px;">🎥 RECADO ESPECIAL</p>
+        <p style="font-size:0.95rem;line-height:1.5;color:var(--text);">A <strong>Vivi</strong> passou pra dar um recado pra vocês, gente! Confira o vídeo que a Virginia fez pro Tarô Amoroso:</p>
+        <div id="vturb-wrap" style="margin-top:16px;border-radius:12px;overflow:hidden;">
+          <vturb-smartplayer id="vid-69d1c27032c35a227affd35c" style="display:block;margin:0 auto;width:100%;max-width:400px;"></vturb-smartplayer>
+        </div>
+      </div>
+
+      <div class="section-sep"><span>✦</span></div>
+
+      <div class="blocked-section">
+        <div class="blocked-title">REVELAÇÃO COMPLETA — ACESSO BLOQUEADO</div>
+
+        <div class="preview-page">
+          <div class="preview-label">PÁGINA 1 — PRÉVIA DA SUA LEITURA</div>
+          <div class="preview-inner">
+            <p>As cartas identificaram uma presença de <span class="preview-highlight">energia feminina recente</span> ao redor de ${A.signo_dele}. Alguém que entrou nos últimos meses — não por amor, mas por impulso. Não é um vínculo profundo. É uma distração.</p>
+            <p>O tarô revelou que ${A.signo_dele} sente sua falta nos momentos de silêncio — de madrugada, quando o impulso passa e sobra só a verdade. Ele pensa em você mais do que demonstra, mas algo trava a volta dele.</p>
+            <p>As cartas também identificaram <span class="preview-highlight">onde ele ainda é vulnerável a você</span>. Existe um ponto fraco que, se ativado corretamente, faz toda a resistência dele desmoronar. Esse ponto é...</p>
+          </div>
+          <div class="preview-fade"></div>
+        </div>
+
+        <div class="blocked-page">
+          <div class="blocked-inner">
+            <p>→ Quem é ela e há quanto tempo está na vida dele</p>
+            <p>→ O que ${A.signo_dele} sente de verdade por você agora</p>
+            <p>→ Onde ele ainda é vulnerável a você</p>
+          </div>
+          <div class="blocked-overlay">
+            ${SVG_LOCK}
+            <span class="lock-label">PÁGINA 2 BLOQUEADA</span>
+          </div>
+        </div>
+
+        <div class="blocked-page">
+          <div class="blocked-inner">
+            <p>→ Como usar as vulnerabilidades dele para fazê-lo sentir sua falta</p>
+            <p>→ O ponto de virada — quando agir para sair na frente</p>
+            <p>→ A sequência que muda o jogo nos próximos 7 dias</p>
+          </div>
+          <div class="blocked-overlay">
+            ${SVG_LOCK}
+            <span class="lock-label">PÁGINA 3 BLOQUEADA</span>
+          </div>
+        </div>
+
+        <div class="blocked-page">
+          <div class="blocked-inner">
+            <p>→ A simpatia cigana para cortar o vínculo com a outra</p>
+            <p>→ Como fazer ele te ver diferente — e nunca mais te esquecer</p>
+            <p>→ O que fazer nas próximas 72 horas para fazê-lo implorar de joelhos</p>
+          </div>
+          <div class="blocked-overlay">
+            ${SVG_LOCK}
+            <span class="lock-label">PÁGINA 4 BLOQUEADA</span>
+          </div>
+        </div>
+
+        <div class="blocked-page">
+          <div class="blocked-inner">
+            <p>→ Guia das Simpatias Ciganas — passo a passo</p>
+            <p>→ Leitura Secreta do Signo Dele</p>
+            <p>→ Oração de Atração Cigana</p>
+          </div>
+          <div class="blocked-overlay">
+            ${SVG_LOCK}
+            <span class="lock-label">PÁGINA 5 BLOQUEADA</span>
+          </div>
+        </div>
+
+        <div class="pages-badge">
+          <div class="pages-badge-inner">+ 7 páginas esperando por você</div>
+        </div>
+      </div>
+
+      <div class="section-sep"><span>✦</span></div>
+
+      <div class="bonus-section">
+        <div class="bonus-label">🎁 BÔNUS EXCLUSIVOS — SÓ HOJE</div>
+        <div class="bonus-subtitle">Além da revelação completa, você também recebe:</div>
+        <div class="bonus-card">
+          <img class="bonus-cover" src="bonus1.png" alt="Guia das Simpatias Ciganas" loading="lazy">
+          <div class="bonus-body">
+            <div class="bonus-title">Guia das Simpatias Ciganas</div>
+            <div class="bonus-desc">As 3 simpatias mais poderosas para fazer ele voltar, passo a passo</div>
+          </div>
+        </div>
+        <div class="bonus-card">
+          <img class="bonus-cover" src="bonus2.png" alt="Leitura Secreta do Signo Dele" loading="lazy">
+          <div class="bonus-body">
+            <div class="bonus-title">Leitura Secreta do Signo Dele</div>
+            <div class="bonus-desc">O que ${A.signo_dele} sente quando perde alguém, e como usar isso a seu favor</div>
+          </div>
+        </div>
+        <div class="bonus-card">
+          <img class="bonus-cover" src="bonus3.png" alt="Oração de Atração Cigana" loading="lazy">
+          <div class="bonus-body">
+            <div class="bonus-title">Oração de Atração Cigana</div>
+            <div class="bonus-desc">A palavra exata que ativa o pensamento dele sobre você nas próximas 24 horas</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-sep"><span>✦</span></div>
+
+      <div class="offer-section">
+        <div class="offer-label">📦 TUDO QUE VOCÊ RECEBE HOJE</div>
+        <div class="offer-card">
+
+          <div class="offer-title">Revelação Completa do Tarô Cigano</div>
+          <div class="offer-divider"></div>
+
+          <ul class="offer-list">
+            <li class="offer-item"><span class="offer-check">✓</span><span>Sua leitura personalizada completa com ${A.signo_dela} e ${A.signo_dele}</span></li>
+            <li class="offer-item"><span class="offer-check">✓</span><span>Identificação da energia externa ao redor dele</span></li>
+            <li class="offer-item"><span class="offer-check">✓</span><span>Onde ele ainda é vulnerável a você</span></li>
+            <li class="offer-item"><span class="offer-check">✓</span><span>O ponto de virada — quando e como agir</span></li>
+            <li class="offer-item"><span class="offer-check">✓</span><span>A sequência energética dos próximos 7 dias</span></li>
+            <li class="offer-item"><span class="offer-check">✓</span><span>O que fazer nas próximas 72 horas</span></li>
+          </ul>
+
+          <div class="offer-divider"></div>
+
+          <div class="offer-bonus-label">+ 3 Bônus Exclusivos:</div>
+          <ul class="offer-bonus-list">
+            <li class="offer-bonus-item"><span>🎁</span><span>Guia das Simpatias Ciganas <em style="color:rgba(192,132,252,0.55)">(valor R$37)</em></span></li>
+            <li class="offer-bonus-item"><span>🎁</span><span>Leitura Secreta do Signo Dele <em style="color:rgba(192,132,252,0.55)">(valor R$27)</em></span></li>
+            <li class="offer-bonus-item"><span>🎁</span><span>Oração de Atração Cigana <em style="color:rgba(192,132,252,0.55)">(valor R$19)</em></span></li>
+          </ul>
+
+          <div class="offer-divider"></div>
+
+          <div class="offer-value">
+            <div class="offer-value-label">Valor total de tudo:</div>
+            <div class="offer-strike">R$383,00</div>
+            <div class="offer-arrow">↓</div>
+            <div class="offer-you-pay">Você paga apenas:</div>
+            <div class="offer-price">R$19,90</div>
+            <div class="offer-terms">Pagamento único · Acesso imediato · Para sempre</div>
+          </div>
+
+          <div class="offer-guarantee">🛡️ Garantia de 7 dias, Se não funcionar, devolvemos tudo</div>
+
+        </div>
+      </div>
+
+      <button class="cta-main IC-Geral" onclick="ctaClick()">
+        👇 QUERO SABER TUDO
+        <span class="cta-price">R$19,90</span>
+      </button>
+
+      <div class="cta-badges">
+        <span class="cta-badge">${CHECK_SVG}Funciona mesmo se ele te bloqueou</span>
+        <span class="cta-badge">${CHECK_SVG}Funciona mesmo se já está com outra</span>
+        <span class="cta-badge">${CHECK_SVG}Você não vai parecer desesperada</span>
+      </div>
+
+      <div class="section-sep"><span>✦</span></div>
+
+      <div class="social-proof">
+        <div class="social-label">⭐ O QUE OUTRAS MULHERES DESCOBRIRAM</div>
+
+        <div class="dep-stack">
+          <img class="dep-stack-img" src="dep1.png" alt="Depoimento 1" loading="lazy">
+          <img class="dep-stack-img" src="dep3.png" alt="Depoimento 2" loading="lazy">
+          <img class="dep-stack-img" src="dep4.png" alt="Depoimento 3" loading="lazy">
+        </div>
+
+        <div class="social-count">✦ Mais de 47.000 mulheres já usaram essa revelação ✦</div>
+      </div>
+
+      <div class="guarantee-section">
+        <img src="garantia.png" alt="Garantia de 7 dias" class="guarantee-img" loading="lazy">
+        <p class="guarantee-sub">Caso o tarô amoroso não realize seus desejos, te damos garantia de 7 dias para pedir seu dinheiro de volta sem burocracia.</p>
+      </div>
+
+      <div class="section-sep"><span>✦</span></div>
+
+      <div class="counter">
+        <span class="counter-dot"></span>
+        <span id="counter-text">37 mulheres estão recebendo a revelação agora</span>
+      </div>
+
+      <div class="urgency-timer">⏳ Esta leitura expira em <span id="timer-display">14:59</span></div>
+    </div>`;
+
+  void screen.offsetWidth;
+  screen.classList.add('s-in');
+
+  // Load Vturb player only when visible
+  var vturbLoaded=false;
+  var vturbObs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting&&!vturbLoaded){
+      vturbLoaded=true;
+      var vs=document.createElement("script");
+      vs.src="https://scripts.converteai.net/f8b4e0de-a823-43ed-b819-55326f24b8aa/players/69d1c27032c35a227affd35c/v4/player.js";
+      vs.async=true;
+      document.head.appendChild(vs);
+      vturbObs.disconnect();
+    }
+  },{threshold:0.5});
+  var vturbEl=document.getElementById('vturb-wrap');
+  if(vturbEl) vturbObs.observe(vturbEl);
+
+  // Live counter
+  let count = Math.floor(Math.random()*24)+23;
+  setInterval(()=>{
+    const delta = Math.random()>.5 ? 1 : -1;
+    count = Math.max(23, Math.min(47, count+delta));
+    const el = document.getElementById('counter-text');
+    if(el) el.textContent = `${count} mulheres estão recebendo a revelação agora`;
+  }, 3500);
+
+  // Countdown timer 14:59 → 00:00 (drift-free)
+  const timerEnd = Date.now() + (14*60+59)*1000;
+  const fixedTimerEl = document.getElementById('fixed-timer');
+  if(fixedTimerEl){ fixedTimerEl.classList.add('visible'); document.body.classList.add('has-fixed-timer'); }
+  function tickTimer(){
+    const rem = Math.max(0, Math.round((timerEnd - Date.now()) / 1000));
+    const ts = String(Math.floor(rem/60)).padStart(2,'0')+':'+String(rem%60).padStart(2,'0');
+    const el = document.getElementById('timer-display');
+    const fel = document.getElementById('fixed-timer-display');
+    if(el) el.textContent = ts;
+    if(fel) fel.textContent = ts;
+    if(rem > 0) setTimeout(tickTimer, 1000);
+  }
+  setTimeout(tickTimer, 1000);
+}
+
+// ═══════════════════════════════════════════════
+// INTRO
+// ═══════════════════════════════════════════════
+function renderIntro(){
+  updateProgress(0);
+  const screen = document.getElementById('screen');
+  screen.innerHTML = `
+    <div class="intro">
+      <h1 style="font-size:2.2rem;line-height:1.2">Faça ele voltar <em style="color:var(--gold)">de joelhos</em> com o Tarô Amoroso</h1>
+      <img src="reportagem-hero.png" alt="Reportagem" style="width:80%;border-radius:12px;margin:16px auto;display:block;box-shadow:0 0 30px rgba(124,45,146,0.4);">
+      <p class="intro-sub">Em menos de 2 minutos as cartas revelam <strong style="color:#f59e0b">como fazer ele implorar pra voltar</strong>.</p>
+      <button class="btn-primary" onclick="startQuiz()">🔮 QUERO SABER A VERDADE</button>
+      <div class="intro-social">✦ Mais de <strong style="color:var(--gold)">47.000</strong> revelações realizadas ✦</div>
+    </div>`;
+  screen.classList.add('s-in');
+}
+
+function startQuiz(){
+  state.step = 1;
+  trackStep(1, 'Sentimento');
+  updateProgress(1);
+  transition(()=>renderStep(1));
+}
+
+// ═══════════════════════════════════════════════
+// ─── CAROUSEL ───────────────────────────────────
+function scrollDep(idx){
+  const c = document.getElementById('depCarousel');
+  if(!c) return;
+  const card = c.querySelectorAll('.dep-card')[idx];
+  if(card) card.scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
+  document.querySelectorAll('.dep-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+}
+(function initCarouselObserver(){
+  const tryInit = ()=>{
+    const c = document.getElementById('depCarousel');
+    if(!c) return;
+    const cards = c.querySelectorAll('.dep-card');
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.intersectionRatio > 0.5){
+          const idx = [...cards].indexOf(e.target);
+          document.querySelectorAll('.dep-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+        }
+      });
+    },{root:c,threshold:0.5});
+    cards.forEach(card=>obs.observe(card));
+  };
+  document.addEventListener('DOMContentLoaded', tryInit);
+  setTimeout(tryInit, 100);
+})();
+
+// INIT
+// ═══════════════════════════════════════════════
+if(location.search.includes('pv=1')){
+  state.signo_dela='Áries';state.signo_dele='Touro';state.inicial='J';
+  showResult();
+} else {
+  renderIntro();
+}
+
+function ctaClick(){
+  trackStep(15,'cta_click');
+  // Salva dados no localStorage pra personalizar o entregável
+  localStorage.setItem('taro_dados', JSON.stringify({
+    signo_dele: state.answers.signo_dele || '',
+    signo_dela: state.answers.signo_dela || '',
+    inicial: state.answers.inicial || '',
+    answers: state.answers
+  }));
+  if(typeof fbq === 'function') /* COLE SEU PIXEL AQUI */;
+  if(window.utmify && typeof window.utmify.track === 'function') window.utmify.track('InitiateCheckout');
+  window.location.href = 'https://pay.kirvano.com/8af2b116-478c-42a8-9657-16b0440b3395';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estrutura de Página de Vendas — Mentoria Ascensão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f0f;
+  --card: #1a1a1a;
+  --card-border: #2a2a2a;
+  --gold: #f59e0b;
+  --gold-dark: #d97706;
+  --green: #22c55e;
+  --red: #ef4444;
+  --text: #f5f5f5;
+  --muted: #a3a3a3;
+  --tag-bg: #e8734a;
+  --tag-text: #fff;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+
+/* ─── ANNOTATION SYSTEM ─── */
+.annotation-toggle {
+  position: fixed; top: 16px; right: 16px; z-index: 999;
+  background: var(--tag-bg); color: #fff; border: none; padding: 12px 20px;
+  border-radius: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; box-shadow: 0 4px 24px rgba(232,115,74,0.4);
+  transition: transform .15s, opacity .15s;
+}
+.annotation-toggle:hover { transform: scale(1.05); }
+.annotation-toggle:active { transform: scale(0.97); }
+
+.block-wrapper {
+  position: relative;
+  transition: outline .3s, margin .3s;
+}
+body.show-annotations .block-wrapper {
+  outline: 2px dashed rgba(232,115,74,0.5);
+  outline-offset: 8px;
+  margin-top: 56px;
+}
+body.show-annotations .block-wrapper:first-child { margin-top: 16px; }
+
+.block-label {
+  display: none;
+  position: absolute; top: -44px; left: 50%; transform: translateX(-50%);
+  background: var(--tag-bg); color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem; font-weight: 700; padding: 6px 16px; border-radius: 8px;
+  white-space: nowrap; letter-spacing: 0.05em; z-index: 10;
+  box-shadow: 0 4px 12px rgba(232,115,74,0.3);
+}
+.block-label::after {
+  content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+  border-left: 6px solid transparent; border-right: 6px solid transparent;
+  border-top: 6px solid var(--tag-bg);
+}
+body.show-annotations .block-label { display: block; }
+
+.block-tip {
+  display: none;
+  background: rgba(232,115,74,0.08); border: 1px solid rgba(232,115,74,0.25);
+  border-radius: 12px; padding: 16px 20px; margin-top: 16px;
+  font-size: 0.82rem; line-height: 1.6; color: var(--muted);
+}
+.block-tip strong { color: var(--tag-bg); }
+body.show-annotations .block-tip { display: block; }
+
+/* ─── TABLE OF CONTENTS (annotations) ─── */
+.toc {
+  display: none; position: fixed; left: 16px; top: 50%; transform: translateY(-50%);
+  z-index: 998; background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 14px; padding: 16px; max-width: 220px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+body.show-annotations .toc { display: block; }
+.toc-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.7rem; font-weight: 700; color: var(--tag-bg); letter-spacing: 0.1em; margin-bottom: 10px; }
+.toc a {
+  display: block; font-size: 0.75rem; color: var(--muted); text-decoration: none;
+  padding: 5px 0; transition: color .2s;
+}
+.toc a:hover { color: var(--tag-bg); }
+.toc a span { color: var(--tag-bg); font-weight: 700; margin-right: 6px; }
+
+/* ─── PAGE CONTAINER ─── */
+.container { max-width: 480px; margin: 0 auto; padding: 0 20px; }
+
+/* ─── STICKY BAR ─── */
+.sticky-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: linear-gradient(90deg, #b91c1c, #dc2626);
+  color: #fff; text-align: center; padding: 10px;
+  font-size: 0.85rem; font-weight: 600; z-index: 100;
+}
+.sticky-bar span {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1rem;
+  background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px; margin-left: 6px;
+}
+
+/* ─── HERO ─── */
+.hero { padding: 60px 0 30px; text-align: center; }
+.hero-badge {
+  display: inline-block; background: var(--gold); color: #000;
+  font-size: 0.7rem; font-weight: 700; padding: 4px 12px;
+  border-radius: 99px; letter-spacing: 0.1em; margin-bottom: 16px; text-transform: uppercase;
+}
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 2rem;
+  font-weight: 700; line-height: 1.15; margin-bottom: 12px;
+}
+.hero h1 em { color: var(--gold); font-style: normal; }
+.hero-sub { color: var(--muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; }
+.hero-img { width: 100%; border-radius: 12px; margin-bottom: 20px; }
+
+/* ─── CTA ─── */
+.cta {
+  display: block; width: 100%;
+  background: linear-gradient(135deg, var(--green), #16a34a);
+  color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem; font-weight: 700; padding: 18px; border: none;
+  border-radius: 12px; cursor: pointer; text-decoration: none;
+  text-align: center; letter-spacing: 0.02em; transition: transform .15s;
+}
+.cta:active { transform: scale(0.98); }
+.cta-sub { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 8px; }
+
+/* ─── SECTIONS ─── */
+.section { padding: 40px 0; }
+.section-title {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem;
+  font-weight: 700; text-align: center; margin-bottom: 6px;
+}
+.section-sub { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
+.sep { height: 1px; background: var(--card-border); margin: 0 40px; }
+
+/* ─── WHATS INSIDE ─── */
+.feature {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 0; border-bottom: 1px solid var(--card-border);
+}
+.feature:last-child { border-bottom: none; }
+.feature-check { color: var(--green); font-size: 1.1rem; flex-shrink: 0; }
+.feature-text { font-size: 0.9rem; }
+.feature-value {
+  margin-left: auto; color: var(--red); font-size: 0.8rem;
+  text-decoration: line-through; flex-shrink: 0;
+}
+
+/* ─── BONUS ─── */
+.bonus-card {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 12px; overflow: hidden; margin-bottom: 12px; position: relative;
+}
+.bonus-price {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--red); color: #fff; font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem; font-weight: 700; padding: 4px 10px;
+  border-radius: 6px; text-decoration: line-through; z-index: 2;
+}
+.bonus-img { width: 100%; object-fit: contain; }
+.bonus-body {
+  padding: 16px; margin-top: -35px; position: relative;
+  z-index: 1; background: var(--card); border-radius: 12px 12px 0 0;
+}
+.bonus-tag {
+  display: inline-block; background: var(--gold); color: #000;
+  font-size: 0.65rem; font-weight: 700; padding: 3px 8px;
+  border-radius: 4px; margin-bottom: 6px; text-transform: uppercase;
+}
+.bonus-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+.bonus-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+/* ─── TESTIMONIALS ─── */
+.testimonial {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 20px; margin-bottom: 12px;
+}
+.test-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 8px; }
+.test-quote {
+  font-size: 0.9rem; line-height: 1.6; font-style: italic;
+  margin-bottom: 12px; color: var(--muted);
+}
+.test-footer { display: flex; align-items: center; gap: 12px; }
+.test-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.test-author { font-size: 0.85rem; font-weight: 600; }
+.test-location { font-size: 0.75rem; color: var(--muted); }
+
+/* ─── PRICING CARDS ─── */
+.pricing-cards { display: flex; flex-direction: column; gap: 16px; }
+.pricing-card {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 20px; padding: 28px 24px; text-align: center; position: relative;
+}
+.pricing-card.featured {
+  background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.03));
+  border: 2px solid var(--gold);
+}
+.pricing-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: #000; font-size: 0.7rem; font-weight: 700;
+  padding: 5px 16px; border-radius: 99px; letter-spacing: 0.08em; white-space: nowrap;
+}
+.pricing-card h3 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+.pricing-card h3.muted { color: var(--muted); }
+.pricing-list { text-align: left; margin-bottom: 20px; }
+.pricing-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 0.85rem; }
+.pricing-item .check { color: var(--green); }
+.pricing-item .star { color: var(--gold); }
+.price-main {
+  font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem;
+  font-weight: 800; color: var(--gold); margin-bottom: 4px;
+}
+.price-main.basic { color: var(--text); font-size: 2.2rem; }
+.price-main small { font-size: 1rem; font-weight: 500; }
+
+/* ─── GUARANTEE ─── */
+.guarantee {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 24px; text-align: center;
+}
+.guarantee-img { width: 45%; display: block; margin: 0 auto 16px; }
+.guarantee h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.guarantee p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+/* ─── FAQ ─── */
+.faq {
+  border: 1px solid var(--card-border); border-radius: 12px;
+  margin-bottom: 8px; overflow: hidden;
+}
+.faq-q {
+  background: var(--card); padding: 16px 20px; font-size: 0.9rem;
+  font-weight: 600; cursor: pointer; display: flex;
+  justify-content: space-between; align-items: center; gap: 12px;
+  user-select: none;
+}
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height .4s ease;
+  font-size: 0.85rem; color: var(--muted); line-height: 1.6;
+}
+.faq-a-inner { padding: 0 20px 16px; }
+.faq.open .faq-a { max-height: 500px; }
+.faq.open .faq-arrow { transform: rotate(180deg); }
+.faq-arrow { transition: transform .3s; color: var(--muted); flex-shrink: 0; font-size: 0.7rem; }
+
+/* ─── LIVE COUNTER ─── */
+.live-counter { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 12px 0; }
+.live-dot {
+  display: inline-block; width: 8px; height: 8px;
+  background: var(--green); border-radius: 50%; margin-right: 6px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* ─── FOOTER ─── */
+.footer {
+  text-align: center; padding: 30px 0; font-size: 0.7rem;
+  color: #555; border-top: 1px solid var(--card-border);
+}
+
+/* ─── RESPONSIVE TOC ─── */
+@media (max-width: 900px) {
+  .toc { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOTATION TOGGLE -->
+<button class="annotation-toggle" id="annotToggle" onclick="toggleAnnotations()">
+  ANOTAÇÕES: OFF
+</button>
+
+<!-- TABLE OF CONTENTS -->
+<nav class="toc">
+  <div class="toc-title">11 BLOCOS</div>
+  <a href="#bloco-1"><span>01</span> Headline</a>
+  <a href="#bloco-2"><span>02</span> Mockup</a>
+  <a href="#bloco-3"><span>03</span> Subheadline</a>
+  <a href="#bloco-4"><span>04</span> CTA</a>
+  <a href="#bloco-5"><span>05</span> O Que Vai Receber</a>
+  <a href="#bloco-6"><span>06</span> Bônus</a>
+  <a href="#bloco-7"><span>07</span> Prova Social</a>
+  <a href="#bloco-8"><span>08</span> Cards de Oferta</a>
+  <a href="#bloco-9"><span>09</span> Garantia 7 Dias</a>
+  <a href="#bloco-10"><span>10</span> FAQ</a>
+  <a href="#bloco-11"><span>11</span> Rodapé</a>
+</nav>
+
+<!-- STICKY TIMER -->
+<div class="sticky-bar">
+  Oferta expira em <span id="timer">14:59</span>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 1: HEADLINE -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-1">
+  <div class="block-label">BLOCO 1 — HEADLINE</div>
+  <section class="hero">
+    <div class="hero-badge">Usado por +4.700 serralheiros</div>
+    <h1><em>+1.000</em> projetos prontos para serralheria por apenas <em>R$10</em></h1>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Abre com número específico (+1.000), promessa clara (projetos prontos) e preço-âncora (R$10). O badge "Usado por +4.700" adiciona prova social já no topo. Nada genérico — o visitante sabe exatamente o que vai receber em 3 segundos.
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 2: MOCKUP -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-2">
+  <div class="block-label">BLOCO 2 — MOCKUP</div>
+  <section style="text-align:center; padding-bottom: 20px;">
+    <img class="hero-img" src="../ofertas/pack-serralheiro/img/hero.jpg" alt="Pack 1000 do Serralheiro" loading="eager">
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Mockup profissional mostrando o produto em dispositivos reais. Dá percepção de valor — mesmo sendo digital, o cérebro "sente" que tá recebendo algo tangível. Sem mockup, produto digital parece vazio.
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 3: SUBHEADLINE -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-3">
+  <div class="block-label">BLOCO 3 — SUBHEADLINE</div>
+  <section style="text-align:center; padding-bottom: 20px;">
+    <p class="hero-sub">Tudo pronto pra você só fabricar e vender, <strong>mesmo sem experiência</strong>.</p>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Complementa a headline dizendo pra quem é ("mesmo sem experiência") e o que fazer com o produto ("fabricar e vender"). Filtra o público certo e quebra a objeção de "será que consigo?".
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 4: CTA QUE ARRASTA -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-4">
+  <div class="block-label">BLOCO 4 — CTA QUE ARRASTA</div>
+  <section style="padding-bottom: 30px;">
+    <a href="#bloco-8" class="cta">PARAR DE PERDER DINHEIRO AGORA</a>
+    <div class="cta-sub">Acesso imediato • Custa menos que um almoço</div>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Não diz "Comprar" — diz "PARAR DE PERDER DINHEIRO". Comunica a transformação, não a transação. A sub-line reforça: "custa menos que um almoço" destrói a objeção de preço. O CTA se repete ao longo da página inteira.
+    </div>
+  </section>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 5: O QUE VOCÊ VAI RECEBER -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-5">
+  <div class="block-label">BLOCO 5 — O QUE VOCÊ VAI RECEBER</div>
+  <section class="section">
+    <div class="section-title">Tudo que vem no Pack</div>
+    <div class="section-sub">Cada item sozinho vale mais que o pack inteiro</div>
+
+    <div class="feature">
+      <span class="feature-check">✓</span>
+      <span class="feature-text"><strong>+1.000 projetos completos</strong> de serralheria</span>
+      <span class="feature-value">R$497</span>
+    </div>
+    <div class="feature">
+      <span class="feature-check">✓</span>
+      <span class="feature-text"><strong>300 projetos</strong> de portões</span>
+      <span class="feature-value">R$197</span>
+    </div>
+    <div class="feature">
+      <span class="feature-check">✓</span>
+      <span class="feature-text"><strong>100 projetos</strong> de carretinhas</span>
+      <span class="feature-value">R$147</span>
+    </div>
+    <div class="feature">
+      <span class="feature-check">✓</span>
+      <span class="feature-text"><strong>100 projetos</strong> de reboques</span>
+      <span class="feature-value">R$147</span>
+    </div>
+    <div class="feature">
+      <span class="feature-check">✓</span>
+      <span class="feature-text"><strong>600 projetos</strong> de móveis industriais</span>
+      <span class="feature-value">R$297</span>
+    </div>
+    <div class="feature">
+      <span class="feature-check">✓</span>
+      <span class="feature-text"><strong>50 projetos</strong> de churrasqueiras</span>
+      <span class="feature-value">R$97</span>
+    </div>
+    <div class="feature">
+      <span class="feature-check">✓</span>
+      <span class="feature-text"><strong>100 projetos</strong> de academia</span>
+      <span class="feature-value">R$147</span>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.03));border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:20px;text-align:center;margin-top:20px">
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:4px">Valor total separado:</p>
+      <p style="font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:800;color:var(--red);text-decoration:line-through">R$1.529</p>
+      <p style="font-size:1rem;margin-top:8px">Hoje tudo por apenas <strong style="color:var(--gold);font-family:'Space Grotesk',sans-serif;font-size:1.8rem">R$27</strong></p>
+    </div>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Cada item tem nome próprio + valor fictício riscado. No final, soma R$1.529 e mostra R$27 — o cérebro compara automaticamente e sente que é um roubo. Empilhamento de valor é a técnica mais usada em low ticket.
+    </div>
+  </section>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 6: BÔNUS -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-6">
+  <div class="block-label">BLOCO 6 — BÔNUS</div>
+  <section class="section">
+    <div class="section-title">E ainda vem com <em style="color:var(--gold);font-style:normal">4 bônus exclusivos</em></div>
+    <div class="section-sub">Cada bônus sozinho vale mais que o pack inteiro</div>
+
+    <div class="bonus-card">
+      <div class="bonus-price">R$997</div>
+      <img class="bonus-img" src="../ofertas/pack-serralheiro/img/bonus-new1.jpg" alt="Bônus 1" loading="lazy">
+      <div class="bonus-body">
+        <div class="bonus-tag">Bônus 1</div>
+        <div class="bonus-title">Como Ter Clientes Infinitos Sem Sair de Casa</div>
+        <div class="bonus-desc">Aprenda a fortalecer a marca da sua serralheria e vender de casa.</div>
+      </div>
+    </div>
+
+    <div class="bonus-card">
+      <div class="bonus-price">R$997</div>
+      <img class="bonus-img" src="../ofertas/pack-serralheiro/img/bonus-new2.jpg" alt="Bônus 2" loading="lazy">
+      <div class="bonus-body">
+        <div class="bonus-tag">Bônus 2</div>
+        <div class="bonus-title">Profissionalize Seus Serviços com I.A</div>
+        <div class="bonus-desc">Use IA pra calcular projetos, gerar medidas e criar imagens profissionais.</div>
+      </div>
+    </div>
+
+    <div class="bonus-card">
+      <div class="bonus-price">R$497</div>
+      <img class="bonus-img" src="../ofertas/pack-serralheiro/img/bonus-new3.jpg" alt="Bônus 3" loading="lazy">
+      <div class="bonus-body">
+        <div class="bonus-tag">Bônus 3</div>
+        <div class="bonus-title">Lista de Fornecedores Verificados</div>
+        <div class="bonus-desc">Compre materiais pela metade do preço com fornecedores verificados.</div>
+      </div>
+    </div>
+
+    <div class="bonus-card">
+      <div class="bonus-price">R$697</div>
+      <img class="bonus-img" src="../ofertas/pack-serralheiro/img/bonus-new4.jpg" alt="Bônus 4" loading="lazy">
+      <div class="bonus-body">
+        <div class="bonus-tag">Bônus 4</div>
+        <div class="bonus-title">Guia Completo de Precificação</div>
+        <div class="bonus-desc">Saiba exatamente quanto cobrar em cada serviço.</div>
+      </div>
+    </div>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Bônus complementam o produto (não repetem). Cada um tem nome, descrição e valor riscado. 4 bônus é o sweet spot — mais que isso parece desespero. Às vezes a pessoa compra pelo bônus, não pelo produto principal.
+    </div>
+  </section>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 7: PROVA SOCIAL -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-7">
+  <div class="block-label">BLOCO 7 — PROVA SOCIAL</div>
+  <section class="section">
+    <div class="section-title">Eles pararam de perder dinheiro</div>
+    <div class="section-sub">Veja o que aconteceu depois que compraram</div>
+
+    <div class="testimonial">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-quote">"Fechei dois serviços na primeira semana só mostrando os projetos de portão pro cliente. Já paguei o pack umas 100 vezes."</div>
+      <div class="test-footer">
+        <img class="test-avatar" src="../ofertas/pack-serralheiro/img/dep1.jpg" alt="João Carlos">
+        <div><div class="test-author">João Carlos</div><div class="test-location">Minas Gerais</div></div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-quote">"Sou serralheiro há 12 anos. Quando vi os projetos de carretinha e móveis industriais, percebi quanto serviço eu tava recusando por não ter o modelo."</div>
+      <div class="test-footer">
+        <img class="test-avatar" src="../ofertas/pack-serralheiro/img/dep2.jpg" alt="Marcos Vinícius">
+        <div><div class="test-author">Marcos Vinícius</div><div class="test-location">São Paulo</div></div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="test-stars">★★★★★</div>
+      <div class="test-quote">"Tava há 3 semanas parado. Comprei o pack, mostrei uns modelos pro vizinho e fechei um portão e uma grade na mesma semana. R$3.200 de serviço por R$27."</div>
+      <div class="test-footer">
+        <img class="test-avatar" src="../ofertas/pack-serralheiro/img/dep3.jpg" alt="Rafael Nogueira">
+        <div><div class="test-author">Rafael Nogueira</div><div class="test-location">Paraná</div></div>
+      </div>
+    </div>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Depoimentos com resultado específico ("R$3.200 de serviço por R$27") > elogios genéricos ("muito bom"). Cada um tem foto, nome, cidade — gera confiança. Estrelas amarelas são familiares e universais.
+    </div>
+  </section>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 8: CARDS DAS OFERTAS -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-8">
+  <div class="block-label">BLOCO 8 — CARDS DAS OFERTAS</div>
+  <section class="section" id="comprar">
+    <div class="section-title">Escolha seu plano</div>
+    <div class="section-sub">Quanto custa continuar sem isso?</div>
+
+    <div class="pricing-cards">
+      <!-- BÁSICO -->
+      <div class="pricing-card">
+        <h3 class="muted">Plano Básico</h3>
+        <div class="pricing-list">
+          <div class="pricing-item"><span class="check">✓</span> 1.000 projetos de serralheria</div>
+        </div>
+        <div class="price-main basic">R$10 <small>,00</small></div>
+        <button class="cta" style="background:var(--card-border);color:var(--text);font-size:1rem">QUERO O PLANO BÁSICO</button>
+      </div>
+
+      <!-- PREMIUM (featured) -->
+      <div class="pricing-card featured">
+        <div class="pricing-badge">MAIS VENDIDO</div>
+        <h3>Plano Premium</h3>
+        <div class="pricing-list">
+          <div class="pricing-item"><span class="check">✓</span> <strong>+1.000 projetos completos</strong></div>
+          <div class="pricing-item"><span class="check">✓</span> 300 projetos de portões</div>
+          <div class="pricing-item"><span class="check">✓</span> 100 projetos de carretinhas</div>
+          <div class="pricing-item"><span class="check">✓</span> 600 projetos de móveis industriais</div>
+          <div class="pricing-item"><span class="check">✓</span> 50 projetos de churrasqueiras</div>
+          <div class="pricing-item" style="margin-top:8px;padding-top:12px;border-top:1px solid var(--card-border)"><span class="star">★</span> <strong>Todos os 4 bônus inclusos</strong></div>
+          <div class="pricing-item"><span class="star">★</span> <strong>Acesso vitalício</strong></div>
+        </div>
+        <div style="font-size:0.9rem;color:var(--muted);margin-bottom:4px">Tudo isso por apenas</div>
+        <div class="price-main">R$27</div>
+        <a href="#" class="cta">QUERO O PACK PREMIUM AGORA</a>
+      </div>
+    </div>
+
+    <div class="live-counter">
+      <span class="live-dot"></span>
+      <span>47 serralheiros compraram nas últimas 24h</span>
+    </div>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> O card básico (R$10) existe pra ninguém escolher — ele faz o Premium (R$27) parecer baratíssimo por comparação. Badge "MAIS VENDIDO" usa prova social. A borda dourada destaca visualmente o card principal. Isso é ancoragem de preço.
+    </div>
+  </section>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 9: GARANTIA 7 DIAS -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-9">
+  <div class="block-label">BLOCO 9 — GARANTIA 7 DIAS</div>
+  <section class="section">
+    <div class="guarantee">
+      <img class="guarantee-img" src="../ofertas/pack-serralheiro/img/garantia-new.png" alt="Garantia 7 dias" loading="lazy">
+      <h3>Risco ZERO. Garantia de 7 Dias</h3>
+      <p>Se em 7 dias você não fechar <strong>pelo menos 1 serviço</strong> usando os projetos, devolvemos cada centavo. Sem perguntas, sem burocracia. O único risco é não comprar.</p>
+    </div>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Elimina o medo ("e se não gostar?"). Parece contraintuitivo, mas garantia visível REDUZ reembolsos. A copy inverte o risco: "o único risco é NÃO comprar". Selo visual reforça credibilidade. É obrigatória por lei (CDC).
+    </div>
+  </section>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 10: FAQ -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-10">
+  <div class="block-label">BLOCO 10 — FAQ</div>
+  <section class="section">
+    <div class="section-title">Perguntas Frequentes</div>
+    <div class="section-sub">Tire suas dúvidas antes de comprar</div>
+
+    <div class="faq" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Preciso ter experiência em serralheria?<span class="faq-arrow">▼</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Não. Os projetos vêm com todas as medidas, materiais e passo a passo.</div></div>
+    </div>
+
+    <div class="faq" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Como recebo o material?<span class="faq-arrow">▼</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Imediatamente após a confirmação do pagamento, você recebe o acesso no seu e-mail.</div></div>
+    </div>
+
+    <div class="faq" onclick="this.classList.toggle('open')">
+      <div class="faq-q">O acesso é vitalício mesmo?<span class="faq-arrow">▼</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Sim. Paga uma vez e tem acesso pra sempre, incluindo atualizações.</div></div>
+    </div>
+
+    <div class="faq" onclick="this.classList.toggle('open')">
+      <div class="faq-q">E se eu não gostar?<span class="faq-arrow">▼</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Você tem 7 dias de garantia incondicional. Devolvemos 100% sem perguntas.</div></div>
+    </div>
+
+    <div class="faq" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Aceita quais formas de pagamento?<span class="faq-arrow">▼</span></div>
+      <div class="faq-a"><div class="faq-a-inner">Cartão de crédito (até 12x), PIX e boleto.</div></div>
+    </div>
+
+    <div class="block-tip">
+      <strong>Por que funciona:</strong> Cada pergunta é uma objeção disfarçada. "E se não gostar?" = medo de perder dinheiro. "Preciso ter experiência?" = medo de não conseguir. Cada resposta é uma oportunidade de vender de novo. Toggle (abrir/fechar) mantém a página limpa.
+    </div>
+  </section>
+</div>
+
+<div class="sep"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- BLOCO 11: RODAPÉ -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="block-wrapper" id="bloco-11">
+  <div class="block-label">BLOCO 11 — RODAPÉ</div>
+  <section class="section" style="text-align:center">
+    <div class="section-title">Amanhã esse preço não existe mais</div>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:8px">Cada dia sem o pack = serviço perdido, dinheiro no lixo.</p>
+    <p style="color:var(--red);font-size:0.85rem;font-weight:600;margin-bottom:20px">Você tá literalmente pagando pra NÃO ter isso.</p>
+    <a href="#bloco-8" class="cta">QUERO O PACK AGORA</a>
+    <div class="cta-sub">R$27 hoje ou R$2.000+ de prejuízo por mês</div>
+  </section>
+
+  <footer class="footer">
+    <p>Este produto é comercializado com apoio da Kirvano.</p>
+    <p style="margin-top:4px">A plataforma garante a entrega e a devolução do valor em caso de reembolso.</p>
+    <p style="margin-top:8px"><a href="#" style="color:#555">Termos de Uso</a> • <a href="#" style="color:#555">Política de Privacidade</a> • contato@exemplo.com</p>
+    <p style="margin-top:8px">CNPJ: 00.000.000/0001-00 • Todos os direitos reservados © 2026</p>
+  </footer>
+
+  <div class="block-tip">
+    <strong>Por que funciona:</strong> CTA final com urgência ("amanhã esse preço não existe"). Rodapé tem termos, política e CNPJ — obrigatório pra rodar ads no Meta sem tomar block. O rodapé não é decoração, é compliance.
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// Toggle annotations
+function toggleAnnotations() {
+  document.body.classList.toggle('show-annotations');
+  const btn = document.getElementById('annotToggle');
+  const on = document.body.classList.contains('show-annotations');
+  btn.textContent = 'ANOTAÇÕES: ' + (on ? 'ON' : 'OFF');
+}
+
+// Timer countdown
+(function(){
+  const end = Date.now() + (14*60+59)*1000;
+  const el = document.getElementById('timer');
+  function tick(){
+    const left = Math.max(0, end - Date.now());
+    const m = Math.floor(left/60000);
+    const s = Math.floor((left%60000)/1000);
+    el.textContent = m+':'+(s<10?'0':'')+s;
+    if(left>0) requestAnimationFrame(tick);
+  }
+  tick();
+})();
+</script>
+
+</body>
+</html>
