@@ -691,7 +691,7 @@
           <div class="plan-item"><span class="ck">✓</span><strong>KIT PUBLICAÇÕES PÁSCOA (BÔNUS)</strong></div>
           <div class="plan-item"><span class="ck">✓</span><strong>KIT ILUSTRAÇÕES PÁSCOA (BÔNUS)</strong></div>
         </div>
-        <a href="https://pay.kirvano.com/8af2b116-478c-42a8-9657-16b0440b3395" class="plan-cta primary" target="_blank">GARANTIR OFERTA ESPECIAL</a>
+        <a href="#SEU_LINK_CHECKOUT" class="plan-cta primary" target="_blank">GARANTIR OFERTA ESPECIAL</a>
       </div>
 
       <!-- BASIC -->
@@ -730,7 +730,7 @@
     <span class="eyebrow">Páscoa é dia 05/04</span>
     <h2>Não deixa pra última hora 🐣</h2>
     <p>Quem compra hoje tem tempo de imprimir, montar e caprichar. Quem espera, se arrepende.</p>
-    <a href="https://pay.kirvano.com/8af2b116-478c-42a8-9657-16b0440b3395" class="cta-btn" style="animation:none" target="_blank">🛒 QUERO MEU KIT AGORA</a>
+    <a href="#SEU_LINK_CHECKOUT" class="cta-btn" style="animation:none" target="_blank">🛒 QUERO MEU KIT AGORA</a>
     <div class="trust-badges" style="margin-top:14px">
       <span class="trust-badge">🔒 Compra segura</span>
       <span class="trust-badge">⚡ Acesso imediato</span>
@@ -757,7 +757,7 @@
       <div class="modal-item"><span class="ck">✓</span>Kit Publicações (bônus)</div>
       <div class="modal-item"><span class="ck">✓</span>Kit Ilustrações (bônus)</div>
     </div>
-    <a href="https://pay.kirvano.com/485c5c3a-a196-444c-b28a-0199b79d1602" class="modal-cta" target="_blank">✅ SIM, QUERO O PREMIUM POR R$14,90</a>
+    <a href="#SEU_LINK_CHECKOUT" class="modal-cta" target="_blank">✅ SIM, QUERO O PREMIUM POR R$14,90</a>
     <br>
     <button class="modal-skip" onclick="skipModal()">Não, continuar com o básico por R$10,00</button>
   </div>
@@ -866,13 +866,13 @@
     window.utmify && window.utmify('track','IC - Geral');
     window.fbq && /* COLE SEU PIXEL AQUI */;
     closeModal();
-    window.open('https://pay.kirvano.com/6a76701e-01b7-4a00-9f2f-294a61ef0da7','_blank');
+    window.open('#SEU_LINK_CHECKOUT','_blank');
   }
   document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 
   // Utmify: pageview + IC nos botões de checkout
   window.addEventListener('load', function(){
-    document.querySelectorAll('a[href*="pay.kirvano.com"]').forEach(function(btn){
+    document.querySelectorAll('a[href*="SEU_LINK_CHECKOUT"]').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.utmify && window.utmify('track','IC - Geral');
         window.fbq && /* COLE SEU PIXEL AQUI */;
